@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTODRIP — Car Collector</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.07);
+    --accent: #e8390e;
+    --accent2: #ff6b35;
+    --gold: #f5c842;
+    --teal: #00d4aa;
+    --text: #f0f0f0;
+    --muted: #6b6b80;
+    --purple: #7c3aed;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+/* Background grid */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+linear-gradient(rgba(232,57,14,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(232,57,14,0.03) 1px, transparent 1px);
+background-size: 40px 40px;
+pointer-events: none;
+z-index: 0;
+}
+
+.app {
+position: relative;
+z-index: 1;
+max-width: 480px;
+margin: 0 auto;
+padding-bottom: 80px;
+}
+
+/* HEADER */
+.header {
+background: linear-gradient(135deg, #12121a 0%, #1a1025 100%);
+border-bottom: 1px solid var(–border);
+padding: 16px 20px 0;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+.header-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 14px;
+}
+.logo {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+letter-spacing: 3px;
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.live-badge {
+display: flex; align-items: center; gap: 6px;
+background: rgba(0,212,170,0.15);
+border: 1px solid rgba(0,212,170,0.4);
+color: var(–teal);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-weight: 700;
+font-size: 12px;
+letter-spacing: 1px;
+padding: 4px 10px;
+border-radius: 20px;
+}
+.live-dot {
+width: 6px; height: 6px;
+background: var(–teal);
+border-radius: 50%;
+animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse {
+0%,100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* BALANCE CARD */
+.balance-card {
+background: linear-gradient(135deg, #1e1030 0%, #12121a 60%, #0a1a20 100%);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 18px 20px;
+margin: 16px 20px 0;
+position: relative;
+overflow: hidden;
+}
+.balance-card::after {
+content: ‘’;
+position: absolute;
+top: -40px; right: -40px;
+width: 120px; height: 120px;
+background: radial-gradient(circle, rgba(232,57,14,0.15) 0%, transparent 70%);
+pointer-events: none;
+}
+.balance-label {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+letter-spacing: 2px;
+color: var(–muted);
+font-weight: 600;
+margin-bottom: 4px;
+}
+.balance-amount {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 44px;
+letter-spacing: 2px;
+color: var(–accent2);
+line-height: 1;
+}
+.balance-cap {
+font-size: 12px;
+color: var(–muted);
+margin-top: 6px;
+}
+.balance-bar {
+height: 3px;
+background: rgba(255,255,255,0.08);
+border-radius: 3px;
+margin-top: 12px;
+overflow: hidden;
+}
+.balance-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–accent), var(–accent2));
+border-radius: 3px;
+width: 0%;
+transition: width 0.5s ease;
+}
+
+/* LEVEL & XP */
+.level-row {
+display: flex; align-items: center; justify-content: space-between;
+margin: 16px 20px 0;
+padding: 14px 16px;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+}
+.level-left {
+display: flex; align-items: center; gap: 10px;
+}
+.level-icon {
+width: 32px; height: 32px;
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-size: 16px;
+}
+.level-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 18px;
+font-weight: 700;
+letter-spacing: 1px;
+}
+.xp-text {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 13px;
+color: var(–muted);
+font-weight: 600;
+}
+.xp-bar {
+height: 4px;
+background: rgba(255,255,255,0.08);
+border-radius: 4px;
+margin: 8px 20px 0;
+overflow: hidden;
+}
+.xp-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–accent), var(–gold));
+border-radius: 4px;
+width: 30%;
+transition: width 0.5s ease;
+}
+
+/* MAIN CLICK BUTTON */
+.click-area {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 28px 20px 20px;
+position: relative;
+}
+.prestige-hint {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 12px;
+letter-spacing: 1.5px;
+color: var(–muted);
+text-transform: uppercase;
+margin-bottom: 4px;
+}
+.prestige-hint span {
+color: var(–gold);
+}
+.click-btn-wrap {
+position: relative;
+margin: 16px 0;
+}
+.click-btn-glow {
+position: absolute;
+inset: -20px;
+background: radial-gradient(circle, rgba(232,57,14,0.25) 0%, transparent 70%);
+border-radius: 50%;
+animation: glowPulse 2s ease infinite;
+pointer-events: none;
+}
+@keyframes glowPulse {
+0%,100% { transform: scale(1); opacity: 0.8; }
+50% { transform: scale(1.1); opacity: 0.4; }
+}
+.click-btn {
+width: 130px; height: 130px;
+background: linear-gradient(135deg, #d42d08, #ff6b35);
+border: none;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 52px;
+box-shadow: 0 0 40px rgba(232,57,14,0.5), inset 0 2px 0 rgba(255,255,255,0.15);
+transition: transform 0.08s ease, box-shadow 0.08s ease;
+position: relative;
+z-index: 1;
+user-select: none;
+-webkit-tap-highlight-color: transparent;
+}
+.click-btn:active {
+transform: scale(0.93);
+box-shadow: 0 0 20px rgba(232,57,14,0.3);
+}
+.click-rate {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 16px;
+font-weight: 600;
+color: var(–muted);
+letter-spacing: 1px;
+}
+.click-rate span { color: var(–accent2); }
+
+/* FLOATING +$ LABEL */
+.float-label {
+position: fixed;
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+color: var(–accent2);
+pointer-events: none;
+z-index: 9999;
+text-shadow: 0 0 10px rgba(232,57,14,0.8);
+animation: floatUp 0.9s ease forwards;
+}
+@keyframes floatUp {
+0% { opacity: 1; transform: translateY(0) scale(1); }
+100% { opacity: 0; transform: translateY(-90px) scale(1.3); }
+}
+
+/* PASSIVE INCOME */
+.passive-bar {
+margin: 0 20px 16px;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 12px 16px;
+display: flex; align-items: center; justify-content: space-between;
+}
+.passive-label {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 13px;
+color: var(–muted);
+letter-spacing: 1px;
+}
+.passive-value {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+color: var(–teal);
+}
+
+/* SECTION HEADER */
+.section-header {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 22px;
+letter-spacing: 3px;
+padding: 0 20px 12px;
+color: var(–text);
+}
+.section-header span {
+color: var(–accent);
+}
+
+/* CAR CASE CARDS */
+.cases-list {
+padding: 0 20px;
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-bottom: 24px;
+}
+.case-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 16px;
+display: flex;
+align-items: center;
+gap: 14px;
+transition: border-color 0.2s, background 0.2s;
+}
+.case-card:hover {
+border-color: rgba(232,57,14,0.3);
+background: #1e1e2a;
+}
+.case-emoji {
+font-size: 40px;
+min-width: 56px;
+height: 56px;
+display: flex; align-items: center; justify-content: center;
+background: var(–surface2);
+border-radius: 12px;
+border: 1px solid var(–border);
+}
+.case-info { flex: 1; }
+.case-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 17px;
+font-weight: 700;
+letter-spacing: 0.5px;
+margin-bottom: 3px;
+}
+.case-price {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 15px;
+font-weight: 600;
+display: flex; align-items: center; gap: 6px;
+}
+.case-price .star { font-size: 12px; }
+.case-tier {
+font-size: 11px;
+padding: 2px 8px;
+border-radius: 20px;
+font-family: ‘Barlow Condensed’, sans-serif;
+font-weight: 700;
+letter-spacing: 1px;
+display: inline-block;
+margin-top: 4px;
+}
+.tier-common { background: rgba(107,107,128,0.2); color: #9090a8; border: 1px solid rgba(107,107,128,0.3); }
+.tier-rare { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.tier-epic { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+.tier-legendary { background: rgba(245,200,66,0.15); color: var(–gold); border: 1px solid rgba(245,200,66,0.4); }
+
+.case-actions {
+display: flex;
+flex-direction: column;
+gap: 6px;
+align-items: flex-end;
+}
+.qty-selector {
+display: flex; align-items: center; gap: 6px;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 4px 10px;
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+color: var(–text);
+}
+.qty-selector select {
+background: transparent;
+border: none;
+color: var(–text);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+outline: none;
+appearance: none;
+width: 30px;
+text-align: center;
+}
+.btn-open {
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+border: none;
+border-radius: 10px;
+color: white;
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+letter-spacing: 1.5px;
+padding: 8px 16px;
+cursor: pointer;
+transition: opacity 0.15s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(232,57,14,0.3);
+}
+.btn-open:hover { opacity: 0.9; }
+.btn-open:active { transform: scale(0.96); }
+.btn-open:disabled {
+background: var(–surface2);
+color: var(–muted);
+box-shadow: none;
+cursor: not-allowed;
+}
+.btn-info {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 8px;
+color: var(–muted);
+font-size: 18px;
+width: 32px; height: 32px;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer;
+transition: color 0.2s;
+}
+.btn-info:hover { color: var(–text); }
+
+/* UPGRADES / SHOP */
+.upgrades-grid {
+padding: 0 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 24px;
+}
+.upgrade-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 14px;
+display: flex;
+flex-direction: column;
+gap: 8px;
+transition: border-color 0.2s;
+}
+.upgrade-card:hover { border-color: rgba(0,212,170,0.3); }
+.upgrade-icon { font-size: 28px; }
+.upgrade-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 15px;
+font-weight: 700;
+}
+.upgrade-desc {
+font-size: 11px;
+color: var(–muted);
+line-height: 1.4;
+}
+.upgrade-level {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 12px;
+color: var(–teal);
+font-weight: 600;
+}
+.btn-upgrade {
+background: rgba(0,212,170,0.12);
+border: 1px solid rgba(0,212,170,0.3);
+border-radius: 8px;
+color: var(–teal);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 13px;
+font-weight: 700;
+padding: 6px 0;
+cursor: pointer;
+width: 100%;
+transition: background 0.15s;
+letter-spacing: 0.5px;
+}
+.btn-upgrade:hover { background: rgba(0,212,170,0.2); }
+.btn-upgrade:disabled {
+background: var(–surface2);
+color: var(–muted);
+border-color: var(–border);
+cursor: not-allowed;
+}
+
+/* GARAGE / INVENTORY */
+.garage-grid {
+padding: 0 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 24px;
+}
+.garage-item {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 14px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+.garage-item .glow-bg {
+position: absolute;
+top: -20px; right: -20px;
+width: 80px; height: 80px;
+border-radius: 50%;
+pointer-events: none;
+}
+.garage-item .car-emoji { font-size: 36px; display: block; margin-bottom: 6px; }
+.garage-item .car-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+display: block;
+margin-bottom: 4px;
+}
+.garage-item .car-value {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 13px;
+color: var(–accent2);
+font-weight: 600;
+}
+.garage-empty {
+text-align: center;
+color: var(–muted);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 15px;
+padding: 40px 20px;
+letter-spacing: 1px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+position: fixed;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 100%;
+max-width: 480px;
+background: rgba(18,18,26,0.95);
+border-top: 1px solid var(–border);
+backdrop-filter: blur(12px);
+display: flex;
+z-index: 200;
+}
+.nav-btn {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 10px 0 14px;
+background: none;
+border: none;
+cursor: pointer;
+color: var(–muted);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 1px;
+gap: 4px;
+transition: color 0.2s;
+}
+.nav-btn.active { color: var(–accent2); }
+.nav-btn .nav-icon { font-size: 20px; }
+
+/* MODAL */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.85);
+z-index: 300;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.25s;
+}
+.modal-overlay.open {
+opacity: 1;
+pointer-events: all;
+}
+.modal {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 24px 24px 0 0;
+padding: 28px 24px 40px;
+width: 100%;
+max-width: 480px;
+transform: translateY(100%);
+transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+max-height: 80vh;
+overflow-y: auto;
+}
+.modal-overlay.open .modal {
+transform: translateY(0);
+}
+.modal-handle {
+width: 40px; height: 4px;
+background: var(–muted);
+border-radius: 4px;
+margin: 0 auto 20px;
+opacity: 0.4;
+}
+.modal-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 26px;
+letter-spacing: 3px;
+margin-bottom: 16px;
+}
+.modal-drop-table {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-bottom: 20px;
+}
+.drop-row {
+display: flex; align-items: center; justify-content: space-between;
+padding: 10px 14px;
+background: var(–surface2);
+border-radius: 10px;
+border: 1px solid var(–border);
+}
+.drop-car { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.drop-car .emoji { font-size: 22px; }
+.drop-chance {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+color: var(–muted);
+}
+.btn-close-modal {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–text);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+padding: 14px;
+border-radius: 12px;
+cursor: pointer;
+letter-spacing: 1px;
+margin-top: 8px;
+transition: background 0.2s;
+}
+.btn-close-modal:hover { background: var(–surface); }
+
+/* REVEAL MODAL */
+.reveal-car {
+text-align: center;
+padding: 20px 0;
+}
+.reveal-car .big-emoji {
+font-size: 80px;
+display: block;
+animation: revealBounce 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+margin-bottom: 12px;
+}
+@keyframes revealBounce {
+0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+60% { transform: scale(1.15) rotate(3deg); }
+100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+.reveal-car .reveal-name {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 32px;
+letter-spacing: 3px;
+margin-bottom: 6px;
+}
+.reveal-car .reveal-value {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 20px;
+font-weight: 700;
+color: var(–accent2);
+margin-bottom: 16px;
+}
+
+/* TABS */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* STATS */
+.stats-grid {
+padding: 0 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 24px;
+}
+.stat-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 16px;
+text-align: center;
+}
+.stat-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+.stat-value {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+letter-spacing: 1px;
+color: var(–accent2);
+display: block;
+}
+.stat-label {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+letter-spacing: 1px;
+color: var(–muted);
+font-weight: 600;
+text-transform: uppercase;
+}
+
+/* Rarity colors */
+.rarity-common .car-name { color: #9090a8; }
+.rarity-rare .car-name { color: #60a5fa; }
+.rarity-rare .glow-bg { background: radial-gradient(rgba(59,130,246,0.2), transparent); }
+.rarity-epic .car-name { color: #a78bfa; }
+.rarity-epic .glow-bg { background: radial-gradient(rgba(124,58,237,0.2), transparent); }
+.rarity-legendary .car-name { color: var(–gold); }
+.rarity-legendary .glow-bg { background: radial-gradient(rgba(245,200,66,0.25), transparent); }
+.rarity-legendary { border-color: rgba(245,200,66,0.3) !important; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(–border); border-radius: 4px; }
+
+.toast {
+position: fixed;
+bottom: 100px;
+left: 50%;
+transform: translateX(-50%);
+background: #1a1a26;
+border: 1px solid var(–accent);
+color: var(–text);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 15px;
+font-weight: 600;
+letter-spacing: 0.5px;
+padding: 10px 20px;
+border-radius: 12px;
+z-index: 9999;
+white-space: nowrap;
+animation: toastIn 0.3s ease;
+box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+@keyframes toastIn {
+from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.sell-btn {
+background: rgba(245,200,66,0.1);
+border: 1px solid rgba(245,200,66,0.3);
+color: var(–gold);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+font-weight: 700;
+padding: 3px 8px;
+border-radius: 6px;
+cursor: pointer;
+margin-top: 4px;
+display: inline-block;
+letter-spacing: 0.5px;
+transition: background 0.15s;
+}
+.sell-btn:hover { background: rgba(245,200,66,0.2); }
+</style>
+
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">AUTODRIP</div>
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    </div>
+  </div>
+
+  <!-- BALANCE -->
+
+  <div class="balance-card">
+    <div class="balance-label">GARAGE WALLET</div>
+    <div class="balance-amount" id="balanceDisplay">$0.00</div>
+    <div class="balance-cap">Cap: $100T • Net worth: <span id="netWorthDisplay">$0</span></div>
+    <div class="balance-bar"><div class="balance-bar-fill" id="balanceFill"></div></div>
+  </div>
+
+  <!-- LEVEL -->
+
+  <div class="level-row">
+    <div class="level-left">
+      <div class="level-icon">⚡</div>
+      <div>
+        <div class="level-name" id="levelDisplay">Level 1</div>
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">CAR HUSTLER</div>
+      </div>
+    </div>
+    <div class="xp-text" id="xpDisplay">0 / 100 XP</div>
+  </div>
+  <div class="xp-bar"><div class="xp-bar-fill" id="xpFill"></div></div>
+
+  <!-- TAB CONTENT -->
+
+  <!-- CASES TAB -->
+
+  <div class="tab-content active" id="tab-cases">
+    <!-- CLICK BUTTON -->
+    <div class="click-area">
+      <div class="prestige-hint">⭐ PRESTIGE — <span id="prestigeHint">11 LEVELS TO GO</span></div>
+      <div class="click-btn-wrap">
+        <div class="click-btn-glow"></div>
+        <button class="click-btn" id="clickBtn" onclick="handleClick(event)">🚗</button>
+      </div>
+      <div class="click-rate">+<span id="clickRate">$0.50</span> / CLICK &nbsp;·&nbsp; <span style="color:var(--teal)" id="passiveRateDisplay">+$0/s passive</span></div>
+    </div>
+
+```
+<!-- PASSIVE INFO -->
+<div class="passive-bar">
+  <div>
+    <div class="passive-label">💰 TOTAL EARNED</div>
+    <div style="font-size:12px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">All time</div>
+  </div>
+  <div class="passive-value" id="totalEarnedDisplay">$0.00</div>
+</div>
+
+<!-- AVAILABLE CASES -->
+<div class="section-header">AVAILABLE <span>CASES</span></div>
+<div class="cases-list" id="casesList"></div>
+```
+
+  </div>
+
+  <!-- GARAGE TAB -->
+
+  <div class="tab-content" id="tab-garage">
+    <div style="height:16px;"></div>
+    <div class="section-header">YOUR <span>GARAGE</span></div>
+    <div class="garage-grid" id="garageGrid">
+      <div class="garage-empty" style="grid-column:span 2">🚗 Open cases to collect cars!</div>
+    </div>
+    <div class="section-header">GARAGE <span>STATS</span></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">🚗</span>
+        <span class="stat-value" id="statCars">0</span>
+        <span class="stat-label">Cars Owned</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📦</span>
+        <span class="stat-value" id="statCases">0</span>
+        <span class="stat-label">Cases Opened</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🏆</span>
+        <span class="stat-value" id="statLegendary">0</span>
+        <span class="stat-label">Legendaries</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">💵</span>
+        <span class="stat-value" id="statSold">0</span>
+        <span class="stat-label">Cars Sold</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP TAB -->
+
+  <div class="tab-content" id="tab-shop">
+    <div style="height:16px;"></div>
+    <div class="section-header">CLICK <span>UPGRADES</span></div>
+    <div class="upgrades-grid" id="clickUpgradesGrid"></div>
+    <div class="section-header">PASSIVE <span>INCOME</span></div>
+    <div class="upgrades-grid" id="passiveUpgradesGrid"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-cases" onclick="switchTab('cases')">
+      <span class="nav-icon">📦</span>CASES
+    </button>
+    <button class="nav-btn" id="nav-garage" onclick="switchTab('garage')">
+      <span class="nav-icon">🏎️</span>GARAGE
+    </button>
+    <button class="nav-btn" id="nav-shop" onclick="switchTab('shop')">
+      <span class="nav-icon">🛒</span>SHOP
+    </button>
+  </div>
+
+</div>
+
+<!-- INFO MODAL -->
+
+<div class="modal-overlay" id="infoModal" onclick="closeModal('infoModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="infoModalTitle"></div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;" id="infoModalSub"></div>
+    <div class="modal-drop-table" id="infoModalDrops"></div>
+    <button class="btn-close-modal" onclick="closeModal('infoModal')">CLOSE</button>
+  </div>
+</div>
+
+<!-- REVEAL MODAL -->
+
+<div class="modal-overlay" id="revealModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="reveal-car" id="revealContent"></div>
+    <button class="btn-close-modal" onclick="closeModal('revealModal')">🔥 SICK PULL!</button>
+  </div>
+</div>
+
+<script>
+// ===========================
+// GAME STATE
+// ===========================
+let state = {
+  balance: 0,
+  totalEarned: 0,
+  xp: 0,
+  level: 1,
+  casesOpened: 0,
+  carsSold: 0,
+  legendaryCount: 0,
+  garage: [],
+  clickUpgrades: [0, 0, 0, 0],
+  passiveUpgrades: [0, 0, 0, 0],
+  passiveIncome: 0,
+  clickPower: 0.5,
+};
+
+// Load state
+try {
+  const saved = localStorage.getItem('autodrip_v2');
+  if (saved) state = { ...state, ...JSON.parse(saved) };
+} catch(e) {}
+
+function saveState() {
+  try { localStorage.setItem('autodrip_v2', JSON.stringify(state)); } catch(e) {}
+}
+
+// ===========================
+// DATA
+// ===========================
+const CASES = [
+  {
+    id: 'beater',
+    name: 'BEATER CRATE',
+    emoji: '📦',
+    price: 25,
+    tier: 'common',
+    tierLabel: 'COMMON',
+    desc: 'Random everyday cars. Nothing fancy.',
+    drops: [
+      { name: 'Honda Civic', emoji: '🚗', rarity: 'common', value: [10, 60], chance: '40%' },
+      { name: 'Toyota Corolla', emoji: '🚙', rarity: 'common', value: [15, 70], chance: '30%' },
+      { name: 'Ford Focus', emoji: '🚘', rarity: 'common', value: [20, 80], chance: '20%' },
+      { name: 'Chevy Malibu', emoji: '🚖', rarity: 'rare', value: [80, 160], chance: '8%' },
+      { name: 'Dodge Charger', emoji: '🏎️', rarity: 'epic', value: [200, 400], chance: '2%' },
+    ]
+  },
+  {
+    id: 'sports',
+    name: 'SPORTS DROP',
+    emoji: '🏎️',
+    price: 150,
+    tier: 'rare',
+    tierLabel: 'RARE',
+    desc: 'Sport and performance vehicles.',
+    drops: [
+      { name: 'Mustang GT', emoji: '🐎', rarity: 'rare', value: [120, 280], chance: '35%' },
+      { name: 'Camaro SS', emoji: '🚗', rarity: 'rare', value: [150, 320], chance: '30%' },
+      { name: 'Challenger R/T', emoji: '💪', rarity: 'rare', value: [180, 380], chance: '20%' },
+      { name: 'BMW M3', emoji: '🔵', rarity: 'epic', value: [450, 900], chance: '12%' },
+      { name: 'Porsche 911', emoji: '🏆', rarity: 'legendary', value: [1200, 2500], chance: '3%' },
+    ]
+  },
+  {
+    id: 'exotic',
+    name: 'EXOTIC VAULT',
+    emoji: '💎',
+    price: 750,
+    tier: 'epic',
+    tierLabel: 'EPIC',
+    desc: 'Rare and exotic machines. High risk, high reward.',
+    drops: [
+      { name: 'Audi R8', emoji: '🦅', rarity: 'epic', value: [600, 1200], chance: '35%' },
+      { name: 'McLaren 720S', emoji: '🦋', rarity: 'epic', value: [900, 1800], chance: '28%' },
+      { name: 'Ferrari F8', emoji: '🐎', rarity: 'epic', value: [1200, 2400], chance: '22%' },
+      { name: 'Lamborghini Huracán', emoji: '🐂', rarity: 'legendary', value: [2500, 5000], chance: '12%' },
+      { name: 'Bugatti Chiron', emoji: '👑', rarity: 'legendary', value: [8000, 15000], chance: '3%' },
+    ]
+  },
+  {
+    id: 'hypercar',
+    name: 'HYPERCAR BLACK',
+    emoji: '👑',
+    price: 5000,
+    tier: 'legendary',
+    tierLabel: 'LEGENDARY',
+    desc: 'Ultra-exclusive hypercars. Only for the elite.',
+    drops: [
+      { name: 'Bugatti Veyron', emoji: '⚡', rarity: 'legendary', value: [8000, 16000], chance: '40%' },
+      { name: 'Koenigsegg CCR', emoji: '🌪️', rarity: 'legendary', value: [12000, 22000], chance: '30%' },
+      { name: 'Pagani Huayra', emoji: '🌊', rarity: 'legendary', value: [18000, 35000], chance: '20%' },
+      { name: 'Rimac Nevera', emoji: '🔋', rarity: 'legendary', value: [28000, 55000], chance: '8%' },
+      { name: 'SSC Tuatara', emoji: '🦎', rarity: 'legendary', value: [50000, 100000], chance: '2%' },
+    ]
+  },
+];
+
+const CLICK_UPGRADES = [
+  { name: 'Better Tires', emoji: '🔧', desc: '+$0.5 per click per level', baseCost: 50, costMult: 2.2, basePower: 0.5 },
+  { name: 'Turbo Engine', emoji: '🔩', desc: '+$2 per click per level', baseCost: 300, costMult: 2.5, basePower: 2 },
+  { name: 'Nitrous Kit', emoji: '💨', desc: '+$10 per click per level', baseCost: 2000, costMult: 3, basePower: 10 },
+  { name: 'Race Tune', emoji: '🏁', desc: '+$50 per click per level', baseCost: 20000, costMult: 3.5, basePower: 50 },
+];
+
+const PASSIVE_UPGRADES = [
+  { name: 'Car Wash', emoji: '🫧', desc: '+$0.2/sec passive income', baseCost: 100, costMult: 2.2, basePower: 0.2 },
+  { name: 'Auto Repair Shop', emoji: '🏪', desc: '+$1/sec passive income', baseCost: 800, costMult: 2.5, basePower: 1 },
+  { name: 'Dealership', emoji: '🏢', desc: '+$8/sec passive income', baseCost: 8000, costMult: 3, basePower: 8 },
+  { name: 'Import Empire', emoji: '🌍', desc: '+$50/sec passive income', baseCost: 75000, costMult: 3.5, basePower: 50 },
+];
+
+// ===========================
+// COMPUTED
+// ===========================
+function getClickPower() {
+  let power = 0.5;
+  CLICK_UPGRADES.forEach((u, i) => {
+    power += u.basePower * state.clickUpgrades[i];
+  });
+  return power;
+}
+
+function getPassivePower() {
+  let power = 0;
+  PASSIVE_UPGRADES.forEach((u, i) => {
+    power += u.basePower * state.passiveUpgrades[i];
+  });
+  return power;
+}
+
+function getUpgradeCost(upgrade, level) {
+  return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMult, level));
+}
+
+function getLevelTitle(level) {
+  const titles = ['CAR HUSTLER','STREET RACER','TRACK KING','SPEED DEMON','ROAD LEGEND','DRIFT MASTER','APEX HUNTER','CIRCUIT LORD','HYPERCAR BOSS','AUTODRIP ELITE'];
+  return titles[Math.min(level-1, titles.length-1)];
+}
+
+// ===========================
+// UI UPDATES
+// ===========================
+function formatMoney(n) {
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+  return '$' + n.toFixed(2);
+}
+
+function updateUI() {
+  document.getElementById('balanceDisplay').textContent = formatMoney(state.balance);
+  document.getElementById('totalEarnedDisplay').textContent = formatMoney(state.totalEarned);
+  
+  // Net worth (balance + garage value)
+  let garageWorth = state.garage.reduce((s, c) => s + c.value, 0);
+  document.getElementById('netWorthDisplay').textContent = formatMoney(state.balance + garageWorth);
+  
+  // Balance bar (out of 10x current level threshold)
+  const levelThreshold = 100 * Math.pow(2, state.level - 1);
+  const fillPct = Math.min((state.balance / (levelThreshold * 10)) * 100, 100);
+  document.getElementById('balanceFill').style.width = fillPct + '%';
+  
+  // Level
+  document.getElementById('levelDisplay').textContent = 'Level ' + state.level;
+  
+  // XP
+  const xpNeeded = 100 * state.level;
+  document.getElementById('xpDisplay').textContent = state.xp + ' / ' + xpNeeded + ' XP';
+  document.getElementById('xpFill').style.width = Math.min((state.xp / xpNeeded) * 100, 100) + '%';
+  
+  // Prestige hint
+  const levelsToPrestige = Math.max(0, 12 - state.level);
+  document.getElementById('prestigeHint').textContent = levelsToPrestige > 0 ? levelsToPrestige + ' LEVELS TO GO' : 'READY TO PRESTIGE!';
+  
+  // Click rate
+  const cp = getClickPower();
+  document.getElementById('clickRate').textContent = formatMoney(cp).replace('$','') + '';
+  document.getElementById('clickRate').closest('.click-rate').innerHTML = `+<span id="clickRate">${formatMoney(cp)}</span> / CLICK &nbsp;·&nbsp; <span style="color:var(--teal)">${formatMoney(getPassivePower())}/s passive</span>`;
+  
+  // Stats
+  document.getElementById('statCars').textContent = state.garage.length;
+  document.getElementById('statCases').textContent = state.casesOpened;
+  document.getElementById('statLegendary').textContent = state.legendaryCount;
+  document.getElementById('statSold').textContent = state.carsSold;
+}
+
+function renderGarage() {
+  const grid = document.getElementById('garageGrid');
+  if (state.garage.length === 0) {
+    grid.innerHTML = '<div class="garage-empty" style="grid-column:span 2">🚗 Open cases to collect cars!</div>';
+    return;
+  }
+  grid.innerHTML = state.garage.map((car, idx) => `
+    <div class="garage-item rarity-${car.rarity}">
+      <div class="glow-bg"></div>
+      <span class="car-emoji">${car.emoji}</span>
+      <span class="car-name">${car.name}</span>
+      <span class="car-value">${formatMoney(car.value)}</span>
+      <button class="sell-btn" onclick="sellCar(${idx})">SELL ${formatMoney(car.value)}</button>
+    </div>
+  `).join('');
+}
+
+function renderCases() {
+  const list = document.getElementById('casesList');
+  list.innerHTML = CASES.map(c => `
+    <div class="case-card">
+      <div class="case-emoji">${c.emoji}</div>
+      <div class="case-info">
+        <div class="case-name">${c.name}</div>
+        <div class="case-price">
+          <span class="star">✦</span>
+          <span style="color:var(--accent2)">${formatMoney(c.price)}</span>
+        </div>
+        <div class="case-tier tier-${c.tier}">${c.tierLabel}</div>
+      </div>
+      <div class="case-actions">
+        <button class="btn-info" onclick="showInfo('${c.id}')">ℹ</button>
+        <div class="qty-selector">
+          <select id="qty-${c.id}">
+            <option value="1">X1</option>
+            <option value="3">X3</option>
+            <option value="5">X5</option>
+            <option value="10">X10</option>
+          </select>
+          <span>▾</span>
+        </div>
+        <button class="btn-open" id="open-${c.id}" onclick="openCase('${c.id}')">OPEN</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderShop() {
+  // Click upgrades
+  const cg = document.getElementById('clickUpgradesGrid');
+  cg.innerHTML = CLICK_UPGRADES.map((u, i) => {
+    const lvl = state.clickUpgrades[i];
+    const cost = getUpgradeCost(u, lvl);
+    const canAfford = state.balance >= cost;
+    return `
+      <div class="upgrade-card">
+        <div class="upgrade-icon">${u.emoji}</div>
+        <div class="upgrade-name">${u.name}</div>
+        <div class="upgrade-desc">${u.desc}</div>
+        <div class="upgrade-level">LVL ${lvl}</div>
+        <button class="btn-upgrade" onclick="buyClickUpgrade(${i})" ${canAfford ? '' : 'disabled'}>
+          ${formatMoney(cost)}
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  const pg = document.getElementById('passiveUpgradesGrid');
+  pg.innerHTML = PASSIVE_UPGRADES.map((u, i) => {
+    const lvl = state.passiveUpgrades[i];
+    const cost = getUpgradeCost(u, lvl);
+    const canAfford = state.balance >= cost;
+    return `
+      <div class="upgrade-card">
+        <div class="upgrade-icon">${u.emoji}</div>
+        <div class="upgrade-name">${u.name}</div>
+        <div class="upgrade-desc">${u.desc}</div>
+        <div class="upgrade-level">LVL ${lvl}</div>
+        <button class="btn-upgrade" onclick="buyPassiveUpgrade(${i})" ${canAfford ? '' : 'disabled'}>
+          ${formatMoney(cost)}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===========================
+// ACTIONS
+// ===========================
+function handleClick(e) {
+  const power = getClickPower();
+  earnMoney(power);
+  gainXP(1);
+  showFloatLabel(e.clientX, e.clientY, '+' + formatMoney(power));
+}
+
+function earnMoney(amount) {
+  state.balance += amount;
+  state.totalEarned += amount;
+  updateUI();
+  saveState();
+}
+
+function gainXP(amount) {
+  state.xp += amount;
+  const xpNeeded = 100 * state.level;
+  if (state.xp >= xpNeeded) {
+    state.xp -= xpNeeded;
+    state.level++;
+    showToast('⬆️ Level Up! Now Level ' + state.level);
+  }
+  updateUI();
+}
+
+function showFloatLabel(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'float-label';
+  el.textContent = text;
+  el.style.left = (x - 30) + 'px';
+  el.style.top = (y - 20) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function openCase(caseId) {
+  const caseData = CASES.find(c => c.id === caseId);
+  const qty = parseInt(document.getElementById('qty-' + caseId).value);
+  const totalCost = caseData.price * qty;
+  
+  if (state.balance < totalCost) {
+    showToast('❌ Not enough cash!');
+    return;
+  }
+
+  state.balance -= totalCost;
+  state.casesOpened += qty;
+  gainXP(qty * 5);
+
+  // Roll drops
+  const pulls = [];
+  for (let q = 0; q < qty; q++) {
+    const drop = rollDrop(caseData);
+    const value = Math.floor(drop.value[0] + Math.random() * (drop.value[1] - drop.value[0]));
+    const car = { ...drop, value, id: Date.now() + Math.random() };
+    state.garage.push(car);
+    pulls.push(car);
+    if (drop.rarity === 'legendary') state.legendaryCount++;
+  }
+
+  updateUI();
+  renderGarage();
+  saveState();
+  
+  // Show reveal modal for first pull (or if single)
+  if (qty === 1) {
+    showReveal(pulls[0]);
+  } else {
+    // Show best pull
+    const best = pulls.reduce((b, c) => c.value > b.value ? c : b);
+    showToast(`📦 Opened x${qty}! Best: ${best.emoji} ${best.name} (${formatMoney(best.value)})`);
+  }
+}
+
+function rollDrop(caseData) {
+  // Build cumulative probabilities from defined chances
+  const chances = [40, 30, 20, 8, 2]; // approximate percentages matching our drop table order
+  const drops = caseData.drops;
+  const roll = Math.random() * 100;
+  let cumulative = 0;
+  for (let i = 0; i < drops.length; i++) {
+    cumulative += parseFloat(drops[i].chance);
+    if (roll <= cumulative) return drops[i];
+  }
+  return drops[drops.length - 1];
+}
+
+function sellCar(index) {
+  const car = state.garage[index];
+  state.balance += car.value;
+  state.totalEarned += car.value;
+  state.carsSold++;
+  state.garage.splice(index, 1);
+  showToast(`💰 Sold ${car.emoji} ${car.name} for ${formatMoney(car.value)}!`);
+  updateUI();
+  renderGarage();
+  saveState();
+}
+
+function buyClickUpgrade(index) {
+  const u = CLICK_UPGRADES[index];
+  const lvl = state.clickUpgrades[index];
+  const cost = getUpgradeCost(u, lvl);
+  if (state.balance < cost) return;
+  state.balance -= cost;
+  state.clickUpgrades[index]++;
+  gainXP(10);
+  showToast(`🔧 ${u.name} upgraded to level ${state.clickUpgrades[index]}!`);
+  updateUI();
+  renderShop();
+  saveState();
+}
+
+function buyPassiveUpgrade(index) {
+  const u = PASSIVE_UPGRADES[index];
+  const lvl = state.passiveUpgrades[index];
+  const cost = getUpgradeCost(u, lvl);
+  if (state.balance < cost) return;
+  state.balance -= cost;
+  state.passiveUpgrades[index]++;
+  gainXP(10);
+  showToast(`🏪 ${u.name} upgraded to level ${state.passiveUpgrades[index]}!`);
+  updateUI();
+  renderShop();
+  saveState();
+}
+
+// ===========================
+// MODALS
+// ===========================
+function showInfo(caseId) {
+  const c = CASES.find(x => x.id === caseId);
+  document.getElementById('infoModalTitle').textContent = c.name;
+  document.getElementById('infoModalSub').textContent = c.desc + ' • Cost: ' + formatMoney(c.price);
+  document.getElementById('infoModalDrops').innerHTML = c.drops.map(d => `
+    <div class="drop-row">
+      <div class="drop-car">
+        <span class="emoji">${d.emoji}</span>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;">${d.name}</div>
+          <div class="case-tier tier-${d.rarity}" style="margin-top:2px">${d.rarity.toUpperCase()}</div>
+        </div>
+      </div>
+      <div>
+        <div class="drop-chance">${d.chance}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--accent2);text-align:right;">${formatMoney(d.value[0])}–${formatMoney(d.value[1])}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('infoModal').classList.add('open');
+}
+
+function showReveal(car) {
+  const rarityColors = {
+    common: '#9090a8',
+    rare: '#60a5fa',
+    epic: '#a78bfa',
+    legendary: '#f5c842',
+  };
+  const color = rarityColors[car.rarity] || '#f0f0f0';
+  document.getElementById('revealContent').innerHTML = `
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;">YOU PULLED</div>
+    <span class="big-emoji">${car.emoji}</span>
+    <div class="reveal-name" style="color:${color}">${car.name}</div>
+    <div style="font-size:12px;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;color:${color};margin-bottom:4px;">${car.rarity.toUpperCase()}</div>
+    <div class="reveal-value">Value: ${formatMoney(car.value)}</div>
+    <div style="font-size:13px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">Added to your garage!</div>
+  `;
+  document.getElementById('revealModal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ===========================
+// NAVIGATION
+// ===========================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'garage') renderGarage();
+  if (tab === 'shop') renderShop();
+}
+
+// ===========================
+// TOAST
+// ===========================
+let toastTimeout;
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  clearTimeout(toastTimeout);
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  toastTimeout = setTimeout(() => el.remove(), 3000);
+}
+
+// ===========================
+// PASSIVE INCOME LOOP
+// ===========================
+setInterval(() => {
+  const passive = getPassivePower();
+  if (passive > 0) {
+    earnMoney(passive * 0.1); // runs every 100ms, so 0.1s worth
+    updateUI();
+  }
+}, 100);
+
+// Save every 5s
+setInterval(saveState, 5000);
+
+// ===========================
+// INIT
+// ===========================
+renderCases();
+renderShop();
+updateUI();
+</script>
+
+</body>
+</html>
