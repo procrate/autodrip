@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,13 +15,9 @@ html,body{
   font-family:'Segoe UI',system-ui,sans-serif;
   overflow:hidden;user-select:none;-webkit-user-select:none;
 }
-
-/* ── TOP BAR ── */
 #topBar{
-  position:fixed;top:0;left:0;right:0;
-  height:44px;
-  background:#2a2a2a;
-  border-bottom:1px solid #444;
+  position:fixed;top:0;left:0;right:0;height:44px;
+  background:#2a2a2a;border-bottom:1px solid #444;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 12px;z-index:100;
 }
@@ -32,44 +29,31 @@ html,body{
   cursor:pointer;display:flex;align-items:center;gap:5px;
 }
 #clearBtn svg{width:12px;height:12px;}
-
-/* ── CANVAS fills space between top bar and bottom/side panel ── */
 #simCanvas{
   position:fixed;top:44px;left:0;
   display:block;cursor:crosshair;touch-action:none;
   background:#1a1a1a;
 }
-
-/* ── FLASH ── */
 #flashOverlay{
   position:fixed;top:44px;left:0;
   background:rgba(255,200,50,0);pointer-events:none;z-index:50;
   transition:background 0.05s;
 }
 #flashOverlay.flash{background:rgba(255,200,50,0.22);}
-
-/* ── STATS OVERLAY ── */
 #statsOverlay{
   position:fixed;left:10px;pointer-events:none;z-index:60;
 }
 #statsOverlay .sl{font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-bottom:1px;}
 #statsOverlay .sv{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:6px;}
-
-/* ── SETTINGS BUTTON ── */
 #settingsBtn{
-  position:fixed;
-  width:40px;height:40px;border-radius:50%;
+  position:fixed;width:40px;height:40px;border-radius:50%;
   background:#fff;border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,0.5);
-  transition:transform 0.2s;color:#333;z-index:60;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);color:#333;z-index:60;
 }
 #settingsBtn svg{width:20px;height:20px;}
-
-/* ── SETTINGS PANEL ── */
 #settingsPanel{
-  position:fixed;
-  background:#2a2a2a;border:1px solid #444;border-radius:14px;
+  position:fixed;background:#2a2a2a;border:1px solid #444;border-radius:14px;
   padding:12px;width:188px;display:none;
   box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:200;
 }
@@ -83,32 +67,23 @@ html,body{
 .tog.on::after{left:20px;}
 .sslider{width:100%;margin-top:5px;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
 .sslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;}
-
-/* ── ELEMENT PANEL (portrait=bottom, landscape=right) ── */
 #elemPanel{
-  position:fixed;
-  background:#2a2a2a;
-  z-index:80;overflow:hidden;
+  position:fixed;background:#2a2a2a;z-index:80;overflow:hidden;
 }
-
 #panelToggle{
   display:flex;align-items:center;justify-content:center;gap:8px;
   padding:7px;cursor:pointer;color:#ccc;font-size:12px;font-weight:600;
-  background:#252525;border-color:#3a3a3a;border-style:solid;
-  flex-shrink:0;
+  background:#252525;border-color:#3a3a3a;border-style:solid;flex-shrink:0;
 }
 .arrow{font-size:11px;transition:transform 0.25s;}
-
 #panelScroll{overflow-y:auto;overflow-x:hidden;}
 #panelScroll.hidden{display:none;}
 .panel-inner{padding:8px;}
-
 .brush-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .brush-row label{font-size:10px;color:#888;font-weight:600;min-width:32px;}
 #brushSlider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
 #brushSlider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer;}
 #brushVal{font-size:10px;color:#ccc;font-weight:700;min-width:16px;text-align:right;}
-
 #elementGrid{display:grid;gap:5px;}
 .eb{
   border:none;border-radius:7px;padding:8px 2px;font-size:11px;font-weight:700;
@@ -119,13 +94,11 @@ html,body{
 .eb.sel{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,255,255,0.25);transform:scale(1.05);z-index:1;}
 .eb.dk{color:rgba(0,0,0,0.8);}
 .eb.lt{color:rgba(255,255,255,0.92);}
-
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:#555;border-radius:3px;}
 </style>
 </head>
 <body>
-
 <div id="topBar">
   <span id="fpsDisplay">FPS: 60</span>
   <h1>PowderBox v2</h1>
@@ -141,6 +114,7 @@ html,body{
 </div>
 
 <canvas id="simCanvas"></canvas>
+
 <div id="flashOverlay"></div>
 
 <div id="statsOverlay">
@@ -185,146 +159,145 @@ html,body{
 
 <script>
 // ══════════════════════════════════════════════
-// ELEMENTS
+// ELEMENTS — ALL POWDER-BASED (no static solids)
+// type: 'powder' | 'liquid' | 'gas'
 // ══════════════════════════════════════════════
-const ELEMENTS={
-  SAND:      {color:[194,154,76], density:1.5,type:'powder',flammable:false,label:'Sand'},
-  WATER:     {color:[70,130,220],density:1.0,type:'liquid',flammable:false,label:'Water'},
-  STONE:     {color:[120,120,125],density:3.0,type:'solid', flammable:false,label:'Stone'},
-  FIRE:      {color:[230,60,10], density:0.1,type:'gas',   flammable:false,label:'Fire'},
-  STEAM:     {color:[190,200,210],density:0.2,type:'gas',  flammable:false,label:'Steam'},
-  LAVA:      {color:[210,80,10], density:2.0,type:'liquid',flammable:false,label:'Lava'},
-  ICE:       {color:[170,210,240],density:0.9,type:'solid',flammable:false,label:'Ice'},
-  OIL:       {color:[160,145,80],density:0.8,type:'liquid',flammable:true, label:'Oil'},
-  WOOD:      {color:[140,80,30], density:2.5,type:'solid', flammable:true, label:'Wood'},
-  SMOKE:     {color:[100,100,110],density:0.05,type:'gas', flammable:false,label:'Smoke'},
-  ACID:      {color:[50,220,30], density:1.1,type:'liquid',flammable:false,label:'Acid'},
-  SALT:      {color:[230,230,230],density:1.4,type:'powder',flammable:false,label:'Salt'},
-  GUNPOWDER: {color:[80,75,80],  density:1.2,type:'powder',flammable:true, label:'Powder'},
-  PLANT:     {color:[30,160,40], density:1.0,type:'solid', flammable:true, label:'Plant'},
-  GLASS:     {color:[160,210,230],density:2.8,type:'solid',flammable:false,label:'Glass'},
-  TNT:       {color:[220,30,30], density:2.0,type:'solid', flammable:false,label:'TNT'},
-  VIRUS:     {color:[180,0,220], density:1.3,type:'powder',flammable:false,label:'Virus'},
-  ANTIMATTER:{color:[20,20,40],  density:0.5,type:'gas',   flammable:false,label:'Anti'},
-  TORNADO:   {color:[180,180,200],density:0.3,type:'gas',  flammable:false,label:'Tornado'},
-  MAGMAROCK: {color:[100,40,10], density:3.5,type:'solid', flammable:false,label:'Magma'},
-  BUBBLE:    {color:[150,230,255],density:0.15,type:'gas', flammable:false,label:'Bubble'},
-  ELECTRIC:  {color:[255,255,50],density:0.4,type:'gas',   flammable:false,label:'Elec'},
-  ERASER:    {color:[60,60,60],  density:0,  type:'eraser',flammable:false,label:'Erase'},
+const ELEMENTS = {
+  SAND:      {color:[194,154,76],  density:1.5, type:'powder', flammable:false, label:'Sand'},
+  WATER:     {color:[70,130,220],  density:1.0, type:'liquid', flammable:false, label:'Water'},
+  STONE:     {color:[120,120,125], density:2.8, type:'powder', flammable:false, label:'Stone'},
+  FIRE:      {color:[230,60,10],   density:0.1, type:'gas',    flammable:false, label:'Fire'},
+  STEAM:     {color:[190,200,210], density:0.2, type:'gas',    flammable:false, label:'Steam'},
+  LAVA:      {color:[210,80,10],   density:2.0, type:'liquid', flammable:false, label:'Lava'},
+  ICE:       {color:[170,210,240], density:1.2, type:'powder', flammable:false, label:'Ice'},
+  OIL:       {color:[160,145,80],  density:0.8, type:'liquid', flammable:true,  label:'Oil'},
+  WOOD:      {color:[140,80,30],   density:2.2, type:'powder', flammable:true,  label:'Wood'},
+  SMOKE:     {color:[100,100,110], density:0.05,type:'gas',    flammable:false, label:'Smoke'},
+  ACID:      {color:[50,220,30],   density:1.1, type:'liquid', flammable:false, label:'Acid'},
+  SALT:      {color:[230,230,230], density:1.4, type:'powder', flammable:false, label:'Salt'},
+  GUNPOWDER: {color:[80,75,80],    density:1.2, type:'powder', flammable:true,  label:'Powder'},
+  PLANT:     {color:[30,160,40],   density:1.0, type:'powder', flammable:true,  label:'Plant'},
+  GLASS:     {color:[160,210,230], density:2.5, type:'powder', flammable:false, label:'Glass'},
+  TNT:       {color:[220,30,30],   density:2.0, type:'powder', flammable:false, label:'TNT'},
+  VIRUS:     {color:[180,0,220],   density:1.3, type:'powder', flammable:false, label:'Virus'},
+  ANTIMATTER:{color:[20,20,40],    density:0.5, type:'gas',    flammable:false, label:'Anti'},
+  TORNADO:   {color:[180,180,200], density:0.3, type:'gas',    flammable:false, label:'Tornado'},
+  MAGMAROCK: {color:[100,40,10],   density:3.0, type:'powder', flammable:false, label:'Magma'},
+  BUBBLE:    {color:[150,230,255], density:0.15,type:'gas',    flammable:false, label:'Bubble'},
+  ELECTRIC:  {color:[255,255,50],  density:0.4, type:'gas',    flammable:false, label:'Elec'},
+  // 5 NEW ELEMENTS
+  CRYSTAL:   {color:[180,100,255], density:2.2, type:'powder', flammable:false, label:'Crystal'},
+  HONEY:     {color:[220,160,20],  density:1.6, type:'liquid', flammable:true,  label:'Honey'},
+  VOID:      {color:[5,0,15],      density:0.0, type:'gas',    flammable:false, label:'Void'},
+  LIGHTNING: {color:[200,220,255], density:0.1, type:'gas',    flammable:false, label:'Ltning'},
+  CORAL:     {color:[255,80,100],  density:1.8, type:'powder', flammable:false, label:'Coral'},
+  ERASER:    {color:[60,60,60],    density:0,   type:'eraser', flammable:false, label:'Erase'},
 };
-const CSS_COLORS={SAND:'#c29a4c',WATER:'#4682dc',STONE:'#787880',FIRE:'#e63c0a',STEAM:'#bec8d2',LAVA:'#d2500a',ICE:'#aad2f0',OIL:'#a09150',WOOD:'#8c501e',SMOKE:'#646468',ACID:'#32dc1e',SALT:'#e6e6e6',GUNPOWDER:'#504b50',PLANT:'#1ea028',GLASS:'#a0d2e6',TNT:'#dc1e1e',VIRUS:'#b400dc',ANTIMATTER:'#141428',TORNADO:'#b4b4c8',MAGMAROCK:'#641e0a',BUBBLE:'#96e6ff',ELECTRIC:'#d4d400',ERASER:'#3c3c3c'};
-const DARK_TEXT=new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','SMOKE','BUBBLE','TORNADO']);
 
-const EKEYS=Object.keys(ELEMENTS);
-const EIDX={};
-EKEYS.forEach((k,i)=>EIDX[k]=i+1);
+const CSS_COLORS = {
+  SAND:'#c29a4c',WATER:'#4682dc',STONE:'#787880',FIRE:'#e63c0a',STEAM:'#bec8d2',
+  LAVA:'#d2500a',ICE:'#aad2f0',OIL:'#a09150',WOOD:'#8c501e',SMOKE:'#646468',
+  ACID:'#32dc1e',SALT:'#e6e6e6',GUNPOWDER:'#504b50',PLANT:'#1ea028',GLASS:'#a0d2e6',
+  TNT:'#dc1e1e',VIRUS:'#b400dc',ANTIMATTER:'#141428',TORNADO:'#b4b4c8',MAGMAROCK:'#641e0a',
+  BUBBLE:'#96e6ff',ELECTRIC:'#d4d400',
+  CRYSTAL:'#b464ff',HONEY:'#dc9a14',VOID:'#050010',LIGHTNING:'#c8dcff',CORAL:'#ff5064',
+  ERASER:'#3c3c3c',
+};
+
+const DARK_TEXT = new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','SMOKE',
+  'BUBBLE','TORNADO','HONEY','LIGHTNING','CRYSTAL']);
+
+const EKEYS = Object.keys(ELEMENTS);
+const EIDX  = {};
+EKEYS.forEach((k,i) => EIDX[k] = i+1);
 
 // ══════════════════════════════════════════════
 // CANVAS & GRID
 // ══════════════════════════════════════════════
-const canvas=document.getElementById('simCanvas');
-const ctx=canvas.getContext('2d');
-const CELL=4;
-let COLS=1,ROWS=1;
-let grid=new Uint16Array(3);
-let nextGrid=new Uint16Array(3);
-let imageData=ctx.createImageData(1,1);
-let pixels=imageData.data;
+const canvas = document.getElementById('simCanvas');
+const ctx    = canvas.getContext('2d');
+const CELL   = 4;
+let COLS=1, ROWS=1;
+let grid, nextGrid, imageData, pixels;
 
-let selElem='SAND',brushSize=3,drawing=false,lx=0,ly=0;
-let simSpeed=3,fc=0,fpsT=performance.now();
-let settings={gravity:true,wind:false};
-let tornadoes=[];
+let selElem='SAND', brushSize=3, drawing=false, lx=0, ly=0;
+let simSpeed=3, fc=0, fpsT=performance.now();
+let settings = {gravity:true, wind:false, heat:false};
+let tornadoes = [];
 
-// ── grid helpers ──
-function gi(x,y){return(y*COLS+x)*3;}
-function gtype(x,y){if(x<0||x>=COLS||y<0||y>=ROWS)return-1;return grid[gi(x,y)];}
-function sc(arr,x,y,t,temp=20,f=0){const i=(y*COLS+x)*3;arr[i]=t;arr[i+1]=Math.min(Math.max(temp,0),255);arr[i+2]=f;}
-function cc(arr,x,y){const i=(y*COLS+x)*3;arr[i]=0;arr[i+1]=20;arr[i+2]=0;}
+// grid cell = 3 shorts: [type, temp, processed]
+function gi(x,y){ return (y*COLS+x)*3; }
+function gtype(x,y){ if(x<0||x>=COLS||y<0||y>=ROWS) return -1; return grid[gi(x,y)]; }
+function sc(arr,x,y,t,temp=20,f=0){ const i=(y*COLS+x)*3; arr[i]=t; arr[i+1]=Math.min(Math.max(temp,0),255); arr[i+2]=f; }
+function cc(arr,x,y){ const i=(y*COLS+x)*3; arr[i]=0; arr[i+1]=20; arr[i+2]=0; }
 
-// ── resize: measure from DOM, set canvas pixels, reinit grid ──
+const PORTRAIT_PANEL_H  = 210;
+const LANDSCAPE_PANEL_W = 172;
+let panelOpen = true;
+
 function doResize(){
-  const isLandscape=window.innerWidth>window.innerHeight;
-  const PANEL_H=panelOpen?PORTRAIT_PANEL_H:34;
-  const PANEL_W=panelOpen?LANDSCAPE_PANEL_W:34;
-  const TOP=44;
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const PANEL_H = panelOpen ? PORTRAIT_PANEL_H : 34;
+  const PANEL_W = panelOpen ? LANDSCAPE_PANEL_W : 34;
+  const TOP = 44;
+  let cw, ch;
+  if(isLandscape){ cw=window.innerWidth-PANEL_W; ch=window.innerHeight-TOP; }
+  else            { cw=window.innerWidth;         ch=window.innerHeight-TOP-PANEL_H; }
+  cw=Math.max(cw,10); ch=Math.max(ch,10);
 
-  let cw,ch;
-  if(isLandscape){
-    cw=window.innerWidth-PANEL_W;
-    ch=window.innerHeight-TOP;
-  } else {
-    cw=window.innerWidth;
-    ch=window.innerHeight-TOP-PANEL_H;
-  }
-  cw=Math.max(cw,10);ch=Math.max(ch,10);
-
-  canvas.width=cw;canvas.height=ch;
-  canvas.style.width=cw+'px';canvas.style.height=ch+'px';
-  canvas.style.top=TOP+'px';canvas.style.left='0px';
+  canvas.width=cw; canvas.height=ch;
+  canvas.style.width=cw+'px'; canvas.style.height=ch+'px';
+  canvas.style.top=TOP+'px'; canvas.style.left='0px';
 
   const fo=document.getElementById('flashOverlay');
-  fo.style.top=TOP+'px';fo.style.left='0px';
-  fo.style.width=cw+'px';fo.style.height=ch+'px';
+  fo.style.top=TOP+'px'; fo.style.left='0px'; fo.style.width=cw+'px'; fo.style.height=ch+'px';
 
-  COLS=Math.floor(cw/CELL);ROWS=Math.floor(ch/CELL);
-  grid=new Uint16Array(COLS*ROWS*3);
-  nextGrid=new Uint16Array(COLS*ROWS*3);
-  imageData=ctx.createImageData(cw,ch);
-  pixels=imageData.data;
-  tornadoes=[];
-  layoutUI(isLandscape,TOP,cw,ch,PANEL_W,PANEL_H);
+  COLS=Math.floor(cw/CELL); ROWS=Math.floor(ch/CELL);
+  grid     = new Uint16Array(COLS*ROWS*3);
+  nextGrid = new Uint16Array(COLS*ROWS*3);
+  imageData= ctx.createImageData(cw,ch);
+  pixels   = imageData.data;
+  tornadoes= [];
+  layoutUI(isLandscape, TOP, cw, ch, PANEL_W, PANEL_H);
 }
 
-const PORTRAIT_PANEL_H=210;
-const LANDSCAPE_PANEL_W=172;
-
-function layoutUI(landscape,TOP,cw,ch,pw,ph){
-  const ep=document.getElementById('elemPanel');
-  const ps=document.getElementById('panelScroll');
-  const arrow=document.getElementById('arrowIcon');
-  const tog=document.getElementById('panelToggle');
-
+function layoutUI(landscape, TOP, cw, ch, pw, ph){
+  const ep    = document.getElementById('elemPanel');
+  const ps    = document.getElementById('panelScroll');
+  const arrow = document.getElementById('arrowIcon');
+  const tog   = document.getElementById('panelToggle');
   if(landscape){
-    // Right side panel
-    ep.style.top=TOP+'px';ep.style.right='0px';ep.style.bottom='0px';
-    ep.style.left='';ep.style.width=LANDSCAPE_PANEL_W+'px';ep.style.height='';
-    ep.style.borderTop='none';ep.style.borderLeft='1px solid #444';
-    ep.style.flexDirection='column';ep.style.display='flex';
-    tog.style.borderBottom='1px solid #3a3a3a';tog.style.borderRight='none';
-    if(panelOpen){ps.style.overflowY='auto';ps.style.height=(ch-34)+'px';}
+    ep.style.top=TOP+'px'; ep.style.right='0px'; ep.style.bottom='0px';
+    ep.style.left=''; ep.style.width=LANDSCAPE_PANEL_W+'px'; ep.style.height='';
+    ep.style.borderTop='none'; ep.style.borderLeft='1px solid #444';
+    ep.style.flexDirection='column'; ep.style.display='flex';
+    tog.style.borderBottom='1px solid #3a3a3a'; tog.style.borderRight='none';
+    if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(ch-34)+'px'; }
     document.getElementById('elementGrid').style.gridTemplateColumns='repeat(2,1fr)';
     arrow.innerHTML='&#x25B6;';
-    if(!panelOpen) arrow.style.transform='rotate(180deg)';else arrow.style.transform='';
-    // Stats bottom-left
+    arrow.style.transform = panelOpen?'':'rotate(180deg)';
     const so=document.getElementById('statsOverlay');
-    so.style.bottom='10px';so.style.top='auto';so.style.left='10px';
-    // Settings btn
+    so.style.bottom='10px'; so.style.top='auto'; so.style.left='10px';
     const sb=document.getElementById('settingsBtn');
-    sb.style.bottom='10px';sb.style.top='auto';sb.style.right='10px';
-    // Settings panel
+    sb.style.bottom='10px'; sb.style.top='auto'; sb.style.right='10px';
     const sp=document.getElementById('settingsPanel');
-    sp.style.bottom='60px';sp.style.top='auto';sp.style.right=(LANDSCAPE_PANEL_W+6)+'px';
+    sp.style.bottom='60px'; sp.style.top='auto'; sp.style.right=(LANDSCAPE_PANEL_W+6)+'px';
   } else {
-    // Bottom panel
-    ep.style.left='0px';ep.style.right='0px';ep.style.bottom='0px';ep.style.top='';
-    ep.style.width='';ep.style.height=panelOpen?PORTRAIT_PANEL_H+'px':'34px';
-    ep.style.borderLeft='none';ep.style.borderTop='1px solid #444';
-    ep.style.flexDirection='column';ep.style.display='flex';
+    ep.style.left='0px'; ep.style.right='0px'; ep.style.bottom='0px'; ep.style.top='';
+    ep.style.width=''; ep.style.height=panelOpen?PORTRAIT_PANEL_H+'px':'34px';
+    ep.style.borderLeft='none'; ep.style.borderTop='1px solid #444';
+    ep.style.flexDirection='column'; ep.style.display='flex';
     tog.style.borderBottom='1px solid #3a3a3a';
-    if(panelOpen){ps.style.overflowY='auto';ps.style.height=(PORTRAIT_PANEL_H-34)+'px';}
+    if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(PORTRAIT_PANEL_H-34)+'px'; }
     document.getElementById('elementGrid').style.gridTemplateColumns='repeat(4,1fr)';
     arrow.innerHTML='&#x2227;';
-    if(!panelOpen) arrow.style.transform='rotate(180deg)';else arrow.style.transform='';
-    // Stats
+    arrow.style.transform = panelOpen?'':'rotate(180deg)';
     const so=document.getElementById('statsOverlay');
-    so.style.bottom=(panelOpen?PORTRAIT_PANEL_H+10:44)+'px';so.style.top='auto';
-    // Settings btn
+    so.style.bottom=(panelOpen?PORTRAIT_PANEL_H+10:44)+'px'; so.style.top='auto';
     const sb=document.getElementById('settingsBtn');
-    sb.style.bottom=(panelOpen?PORTRAIT_PANEL_H+8:42)+'px';sb.style.top='auto';sb.style.right='10px';
-    // Settings panel
+    sb.style.bottom=(panelOpen?PORTRAIT_PANEL_H+8:42)+'px'; sb.style.top='auto'; sb.style.right='10px';
     const sp=document.getElementById('settingsPanel');
-    sp.style.bottom=(panelOpen?PORTRAIT_PANEL_H+56:100)+'px';sp.style.top='auto';sp.style.right='10px';
+    sp.style.bottom=(panelOpen?PORTRAIT_PANEL_H+56:100)+'px'; sp.style.top='auto'; sp.style.right='10px';
   }
 }
 
@@ -334,222 +307,574 @@ function layoutUI(landscape,TOP,cw,ch,pw,ph){
 function gpos(e){
   const r=canvas.getBoundingClientRect();
   const s=e.touches?e.touches[0]:e;
-  return{x:Math.floor((s.clientX-r.left)/CELL),y:Math.floor((s.clientY-r.top)/CELL)};
+  return{x:Math.floor((s.clientX-r.left)/CELL), y:Math.floor((s.clientY-r.top)/CELL)};
 }
 function paint(cx,cy){
   const r=brushSize;
-  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
-    if(dx*dx+dy*dy>r*r)continue;
-    const nx=cx+dx,ny=cy+dy;
-    if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
-    if(selElem==='ERASER'){cc(grid,nx,ny);continue;}
+  for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r) continue;
+    const nx=cx+dx, ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    if(selElem==='ERASER'){ cc(grid,nx,ny); continue; }
     if(gtype(nx,ny)===0){
       let temp=20;
-      if(selElem==='FIRE'||selElem==='LAVA')temp=200;
-      if(selElem==='ELECTRIC')temp=180;
-      if(selElem==='TORNADO')temp=150;
+      if(selElem==='FIRE'||selElem==='LAVA') temp=200;
+      if(selElem==='ELECTRIC') temp=180;
+      if(selElem==='TORNADO')  temp=150;
+      if(selElem==='LIGHTNING') temp=220;
       sc(grid,nx,ny,EIDX[selElem],temp);
-      if(selElem==='TORNADO')tornadoes.push({x:nx,y:ny,life:200});
+      if(selElem==='TORNADO') tornadoes.push({x:nx,y:ny,life:200});
     }
   }
 }
 function line(x0,y0,x1,y1){
   let dx=Math.abs(x1-x0),dy=Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,err=dx-dy;
-  while(true){paint(x0,y0);if(x0===x1&&y0===y1)break;const e2=2*err;if(e2>-dy){err-=dy;x0+=sx;}if(e2<dx){err+=dx;y0+=sy;}}
+  while(true){
+    paint(x0,y0);
+    if(x0===x1&&y0===y1) break;
+    const e2=2*err;
+    if(e2>-dy){err-=dy;x0+=sx;}
+    if(e2<dx) {err+=dx;y0+=sy;}
+  }
 }
-canvas.addEventListener('mousedown',e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
-canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
-canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('mousedown', e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
+canvas.addEventListener('mousemove', e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
+canvas.addEventListener('mouseup',   ()=>drawing=false);
 canvas.addEventListener('mouseleave',()=>drawing=false);
 canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);},{passive:false});
-canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;},{passive:false});
-canvas.addEventListener('touchend',e=>{e.preventDefault();drawing=false;},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;},{passive:false});
+canvas.addEventListener('touchend',  e=>{e.preventDefault();drawing=false;},{passive:false});
 
 // ══════════════════════════════════════════════
 // SIMULATION
 // ══════════════════════════════════════════════
 let shuf=[];
 function buildShuf(){
-  if(shuf.length!==COLS)shuf=Array.from({length:COLS},(_,i)=>i);
-  for(let i=shuf.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuf[i],shuf[j]]=[shuf[j],shuf[i]];}
+  if(shuf.length!==COLS) shuf=Array.from({length:COLS},(_,i)=>i);
+  for(let i=shuf.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuf[i],shuf[j]]=[shuf[j],shuf[i]];
+  }
 }
-function step(){for(let s=0;s<simSpeed;s++)tick();}
+
+function step(){ for(let s=0;s<simSpeed;s++) tick(); }
 
 function tick(){
-  nextGrid.set(grid);buildShuf();
-  tornadoes=tornadoes.filter(t=>{t.life--;t.x+=Math.floor((Math.random()-0.5)*3);t.x=Math.max(0,Math.min(COLS-1,t.x));return t.life>0;});
+  nextGrid.set(grid);
+  buildShuf();
+
+  tornadoes=tornadoes.filter(t=>{
+    t.life--;
+    t.x+=Math.floor((Math.random()-0.5)*3);
+    t.x=Math.max(0,Math.min(COLS-1,t.x));
+    return t.life>0;
+  });
 
   for(let y=ROWS-1;y>=0;y--){
     const dir=Math.random()<0.5?1:-1;
     for(let xi=0;xi<COLS;xi++){
       const x=shuf[xi];
-      const ii=gi(x,y);const type=grid[ii];if(!type)continue;
-      const temp=grid[ii+1];if(grid[ii+2]&1)continue;
-      const key=EKEYS[type-1];const elem=ELEMENTS[key];
+      const ii=gi(x,y);
+      const type=grid[ii];
+      if(!type) continue;
+      const temp=grid[ii+1];
+      if(grid[ii+2]&1) continue;
+      const key=EKEYS[type-1];
+      const elem=ELEMENTS[key];
 
-      // FIRE
+      // ── FIRE ──
       if(key==='FIRE'){
-        const nl=temp-2;if(nl<=0){Math.random()<0.4?sc(nextGrid,x,y,EIDX.SMOKE,20,1):cc(nextGrid,x,y);continue;}
+        const nl=temp-2;
+        if(nl<=0){ Math.random()<0.4?sc(nextGrid,x,y,EIDX.SMOKE,20,1):cc(nextGrid,x,y); continue; }
         sc(nextGrid,x,y,type,nl,1);
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
-          if(ELEMENTS[nk].flammable&&Math.random()<0.05)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-          if(nk==='ICE'&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-          if(nk==='WATER'&&Math.random()<0.03)sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
-          if(nk==='GUNPOWDER'&&Math.random()<0.3)explode(nx,ny,5,false);
-          if(nk==='TNT'&&Math.random()<0.15)bigExplode(nx,ny);
-          if(nk==='BUBBLE'&&Math.random()<0.2)cc(nextGrid,nx,ny);
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(ELEMENTS[nk].flammable&&Math.random()<0.05) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+          if(nk==='ICE'&&Math.random()<0.1)   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='WATER'&&Math.random()<0.03) sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
+          if(nk==='GUNPOWDER'&&Math.random()<0.3) explode(nx,ny,5,false);
+          if(nk==='TNT'&&Math.random()<0.15)       bigExplode(nx,ny);
+          if(nk==='BUBBLE'&&Math.random()<0.2)     cc(nextGrid,nx,ny);
+          if(nk==='CRYSTAL'&&Math.random()<0.03)   cc(nextGrid,nx,ny);
+          if(nk==='HONEY'&&Math.random()<0.06)     sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
+          if(nk==='CORAL'&&Math.random()<0.08)     cc(nextGrid,nx,ny);
         }
-        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.3){sc(nextGrid,x,y-1,EIDX.FIRE,nl-10,1);cc(nextGrid,x,y);}
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x,y-1,EIDX.FIRE,nl-10,1); cc(nextGrid,x,y); }
         continue;
       }
-      // SMOKE/STEAM
+
+      // ── SMOKE / STEAM ──
       if(key==='SMOKE'||key==='STEAM'){
         const nl=temp>0?temp-1:0;
-        if(key==='STEAM'&&nl<=0&&Math.random()<0.02){sc(nextGrid,x,y,EIDX.WATER,20,1);continue;}
-        if(y>0&&gtype(x,y-1)===0){sc(nextGrid,x,y-1,type,nl,1);cc(nextGrid,x,y);}
-        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){sc(nextGrid,x+d,y-1,type,nl,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,nl,1);}
+        if(key==='STEAM'&&nl<=0&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.WATER,20,1); continue; }
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
+        else{
+          const d=Math.random()<0.5?-1:1;
+          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
+          else sc(nextGrid,x,y,type,nl,1);
+        }
         continue;
       }
-      // LAVA
+
+      // ── LAVA ──
       if(key==='LAVA'){
-        if(Math.random()<0.04){const fx=x+(Math.random()<0.5?-1:1);if(fx>=0&&fx<COLS&&y-1>=0&&gtype(fx,y-1)===0)sc(nextGrid,fx,y-1,EIDX.FIRE,180,0);}
-        let nw=false;for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'){nw=true;break;}}
-        if(nw&&Math.random()<0.1){sc(nextGrid,x,y,EIDX.STONE,20,1);continue;}
+        if(Math.random()<0.04){
+          const fx=x+(Math.random()<0.5?-1:1);
+          if(fx>=0&&fx<COLS&&y-1>=0&&gtype(fx,y-1)===0) sc(nextGrid,fx,y-1,EIDX.FIRE,180,0);
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=EKEYS[gtype(nx,ny)-1];
+          if(nk==='WATER'&&Math.random()<0.08){ sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
+          if(nk==='ICE'&&Math.random()<0.1)     sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='CRYSTAL'&&Math.random()<0.04) sc(nextGrid,nx,ny,EIDX.MAGMAROCK,20,0);
+          if(nk==='WOOD'&&Math.random()<0.03)    sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+          if(nk==='CORAL'&&Math.random()<0.05)   sc(nextGrid,nx,ny,EIDX.STONE,20,0);
+        }
       }
-      // ACID
+
+      // ── ACID ──
       if(key==='ACID'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
-          if(nk!=='ACID'&&nk!=='GLASS'&&nk!=='ANTIMATTER'&&Math.random()<0.02){cc(nextGrid,nx,ny);if(Math.random()<0.3)cc(nextGrid,x,y);}
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk!=='ACID'&&nk!=='ANTIMATTER'&&nk!=='VOID'&&Math.random()<0.02){
+            cc(nextGrid,nx,ny);
+            if(Math.random()<0.3) cc(nextGrid,x,y);
+          }
+          if(nk==='CRYSTAL'&&Math.random()<0.08){ cc(nextGrid,nx,ny); if(Math.random()<0.2) cc(nextGrid,x,y); }
+          if(nk==='CORAL'&&Math.random()<0.15) cc(nextGrid,nx,ny);
         }
       }
-      // PLANT
+
+      // ── PLANT ──
       if(key==='PLANT'){
-        if(Math.random()<0.005){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3){sc(nextGrid,nx,ny,EIDX.PLANT,20,0);break;}}}
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01)cc(nextGrid,nx,ny);}
-        continue;
-      }
-      // SALT
-      if(key==='SALT'){let d=false;for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01){cc(nextGrid,x,y);cc(nextGrid,nx,ny);d=true;break;}}if(d)continue;}
-      // ICE
-      if(key==='ICE'){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nk=EKEYS[gtype(nx,ny)-1];if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05){sc(nextGrid,x,y,EIDX.WATER,20,1);break;}}continue;}
-      // TNT
-      if(key==='TNT'){for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nk=EKEYS[gtype(nx,ny)-1];if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.05)bigExplode(x,y);}continue;}
-      // VIRUS
-      if(key==='VIRUS'){
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
-          if(nk!=='VIRUS'&&nk!=='ANTIMATTER'&&nk!=='ELECTRIC'&&Math.random()<0.015)sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
+        // Falls like powder
+        if(settings.gravity){
+          if(mv(x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(x,y,x+d,y+1,type,temp)) continue;
+          if(mv(x,y,x-d,y+1,type,temp)) continue;
         }
-        if(settings.gravity){if(mv(x,y,x,y+1,type,temp))continue;const d=Math.random()<0.5?-1:1;if(mv(x,y,x+d,y+1,type,temp))continue;if(mv(x,y,x-d,y+1,type,temp))continue;}
-        sc(nextGrid,x,y,type,temp,1);continue;
-      }
-      // ANTIMATTER
-      if(key==='ANTIMATTER'){
-        let dead=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];if(nk!=='ANTIMATTER'){cc(nextGrid,nx,ny);if(Math.random()<0.15){cc(nextGrid,x,y);dead=true;break;}}}
-        if(dead)continue;
-        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){sc(nextGrid,x,y-1,type,temp,1);cc(nextGrid,x,y);}
-        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){sc(nextGrid,x+d,y-1,type,temp,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,temp,1);}
-        continue;
-      }
-      // TORNADO
-      if(key==='TORNADO'){
-        const nl=temp-1;if(nl<=0){cc(nextGrid,x,y);continue;}
-        sc(nextGrid,x,y,type,nl,1);
-        for(let dy=-8;dy<=8;dy++)for(let dx=-8;dx<=8;dx++){
-          const nx=x+dx,ny=y+dy;if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
-          if(Math.abs(dx)+Math.abs(dy)<2)continue;
-          const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
-          if(nk==='TORNADO'||nk==='STONE'||nk==='GLASS'||nk==='TNT')continue;
-          if(Math.random()<0.06){
-            const ang=Math.atan2(dy,dx)+Math.PI/4;
-            const tx=nx-Math.round(Math.cos(ang)),ty=ny-Math.round(Math.sin(ang));
-            if(tx>=0&&tx<COLS&&ty>=0&&ty<ROWS&&gtype(tx,ty)===0){sc(nextGrid,tx,ty,nt,grid[gi(nx,ny)+1],0);cc(nextGrid,nx,ny);}
+        // Grow when settled and near water
+        if(Math.random()<0.004){
+          for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3){
+              sc(nextGrid,nx,ny,EIDX.PLANT,20,0); break;
+            }
           }
         }
-        if(Math.random()<0.1){const d=Math.random()<0.5?-1:1;if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0){sc(nextGrid,x+d,y,type,nl,1);cc(nextGrid,x,y);}}
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01)
+            cc(nextGrid,nx,ny);
+        }
+        sc(nextGrid,x,y,type,temp,1);
         continue;
       }
-      // MAGMAROCK
-      if(key==='MAGMAROCK'){
-        if(Math.random()<0.008){for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.5){sc(nextGrid,nx,ny,EIDX.LAVA,200,0);break;}}}
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];if(nk==='ICE'&&Math.random()<0.08)sc(nextGrid,nx,ny,EIDX.WATER,20,0);if(nk==='WOOD'&&Math.random()<0.02)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);}
+
+      // ── SALT ──
+      if(key==='SALT'){
+        let dissolved=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01){
+            cc(nextGrid,x,y); cc(nextGrid,nx,ny); dissolved=true; break;
+          }
+        }
+        if(dissolved) continue;
+      }
+
+      // ── ICE ──
+      if(key==='ICE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=EKEYS[gtype(nx,ny)-1];
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.05){
+            sc(nextGrid,x,y,EIDX.WATER,20,1); break;
+          }
+        }
+      }
+
+      // ── TNT ──
+      if(key==='TNT'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=EKEYS[gtype(nx,ny)-1];
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.05)
+            bigExplode(x,y);
+        }
+      }
+
+      // ── VIRUS ──
+      if(key==='VIRUS'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk!=='VIRUS'&&nk!=='ANTIMATTER'&&nk!=='ELECTRIC'&&nk!=='VOID'&&nk!=='LIGHTNING'&&Math.random()<0.015)
+            sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
+        }
+      }
+
+      // ── ANTIMATTER ──
+      if(key==='ANTIMATTER'){
+        let dead=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk!=='ANTIMATTER'){
+            cc(nextGrid,nx,ny);
+            if(Math.random()<0.15){ cc(nextGrid,x,y); dead=true; break; }
+          }
+        }
+        if(dead) continue;
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){ sc(nextGrid,x,y-1,type,temp,1); cc(nextGrid,x,y); }
+        else{
+          const d=Math.random()<0.5?-1:1;
+          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y-1,type,temp,1); cc(nextGrid,x,y); }
+          else sc(nextGrid,x,y,type,temp,1);
+        }
         continue;
       }
-      // BUBBLE
+
+      // ── TORNADO ──
+      if(key==='TORNADO'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        for(let dy=-8;dy<=8;dy++) for(let dx=-8;dx<=8;dx++){
+          const nx=x+dx, ny=y+dy;
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(Math.abs(dx)+Math.abs(dy)<2) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='TORNADO') continue;
+          if(Math.random()<0.06){
+            const ang=Math.atan2(dy,dx)+Math.PI/4;
+            const tx=nx-Math.round(Math.cos(ang)), ty=ny-Math.round(Math.sin(ang));
+            if(tx>=0&&tx<COLS&&ty>=0&&ty<ROWS&&gtype(tx,ty)===0){
+              sc(nextGrid,tx,ty,nt,grid[gi(nx,ny)+1],0); cc(nextGrid,nx,ny);
+            }
+          }
+        }
+        if(Math.random()<0.1){
+          const d=Math.random()<0.5?-1:1;
+          if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); }
+        }
+        continue;
+      }
+
+      // ── BUBBLE ──
       if(key==='BUBBLE'){
-        const nl=temp-1;if(nl<=0){cc(nextGrid,x,y);continue;}
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
         const above=y>0?gtype(x,y-1):1;
-        if(above===0){sc(nextGrid,x,y-1,type,nl,1);cc(nextGrid,x,y);}
-        else if(y>0&&above>0&&EKEYS[above-1]==='WATER'){sc(nextGrid,x,y-1,type,nl,1);sc(nextGrid,x,y,EIDX.WATER,nextGrid[gi(x,y-1)+1],1);}
-        else{const d=Math.random()<0.5?-1:1;if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){sc(nextGrid,x+d,y-1,type,nl,1);cc(nextGrid,x,y);}else sc(nextGrid,x,y,type,nl,1);}
+        if(above===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
+        else if(y>0&&above>0&&EKEYS[above-1]==='WATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.WATER,20,1); }
+        else{
+          const d=Math.random()<0.5?-1:1;
+          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
+          else sc(nextGrid,x,y,type,nl,1);
+        }
         continue;
       }
-      // ELECTRIC
+
+      // ── ELECTRIC ──
       if(key==='ELECTRIC'){
-        const nl=temp-3;if(nl<=0){cc(nextGrid,x,y);continue;}
+        const nl=temp-3;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
         sc(nextGrid,x,y,type,nl,1);
         const cond=['WATER','STONE','GLASS','ICE','SALT'];
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;const nt=gtype(nx,ny);if(!nt)continue;const nk=EKEYS[nt-1];
-          if(cond.includes(nk)&&Math.random()<0.08){sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);if(nk==='WATER'&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.STEAM,100,0);if(nk==='ICE'&&Math.random()<0.15)sc(nextGrid,nx,ny,EIDX.WATER,20,0);if(nk==='SAND'&&Math.random()<0.05)sc(nextGrid,nx,ny,EIDX.GLASS,20,0);}
-          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-          if(nk==='TNT'&&Math.random()<0.2)bigExplode(nx,ny);
-          if(nk==='GUNPOWDER'&&Math.random()<0.4)explode(nx,ny,4,false);
-          if(nk==='VIRUS'&&Math.random()<0.3)cc(nextGrid,nx,ny);
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(cond.includes(nk)&&Math.random()<0.08){
+            sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);
+            if(nk==='WATER'&&Math.random()<0.1)  sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
+            if(nk==='ICE'&&Math.random()<0.15)   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+            if(nk==='SAND'&&Math.random()<0.05)  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          }
+          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+          if(nk==='TNT'&&Math.random()<0.2)      bigExplode(nx,ny);
+          if(nk==='GUNPOWDER'&&Math.random()<0.4) explode(nx,ny,4,false);
+          if(nk==='VIRUS'&&Math.random()<0.3)    cc(nextGrid,nx,ny);
+          if(nk==='CRYSTAL'&&Math.random()<0.04) sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
         }
-        if(Math.random()<0.3){const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);}
+        if(Math.random()<0.3){
+          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
+          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)
+            sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);
+        }
         continue;
       }
-      // Static solids
-      if(key==='STONE'||key==='GLASS'||key==='PLANT'||key==='WOOD'||key==='MAGMAROCK')continue;
-      // Powder
-      if(elem.type==='powder'){
-        if(!settings.gravity){sc(nextGrid,x,y,type,temp,1);continue;}
-        if(mv(x,y,x,y+1,type,temp))continue;const d=Math.random()<0.5?-1:1;
-        if(mv(x,y,x+d,y+1,type,temp))continue;if(mv(x,y,x-d,y+1,type,temp))continue;
-        sc(nextGrid,x,y,type,temp,1);continue;
+
+      // ── MAGMAROCK ──
+      if(key==='MAGMAROCK'){
+        // Spews lava upward
+        if(Math.random()<0.008){
+          for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){
+            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.5){
+              sc(nextGrid,nx,ny,EIDX.LAVA,200,0); break;
+            }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='ICE'&&Math.random()<0.08)  sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='WOOD'&&Math.random()<0.02) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+        }
+        // Falls as heavy powder
       }
-      // Liquid
+
+      // ═══════════════════════════════════════
+      // NEW: CRYSTAL — powder that shimmers and grows
+      // ═══════════════════════════════════════
+      if(key==='CRYSTAL'){
+        // Slowly grow an arm into empty neighbor
+        if(Math.random()<0.003){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y+1],[x-1,y+1],[x+1,y-1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); break; }
+          }
+        }
+        // React with neighbors
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=EKEYS[gtype(nx,ny)-1];
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+          if(nk==='WATER'&&Math.random()<0.005) sc(nextGrid,nx,ny,EIDX.ICE,20,0);
+        }
+      }
+
+      // ═══════════════════════════════════════
+      // NEW: HONEY — ultra-slow viscous liquid
+      // ═══════════════════════════════════════
+      if(key==='HONEY'){
+        if(Math.random()<0.08 && settings.gravity){
+          if(mv(x,y,x,y+1,type,temp)) continue;
+          if(Math.random()<0.3){
+            if(mv(x,y,x+dir,y,type,temp)) continue;
+            if(mv(x,y,x-dir,y,type,temp)) continue;
+          }
+        }
+        // Slowly absorb water
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.005) cc(nextGrid,nx,ny);
+        }
+        // Solidify if on fire
+        let onFire=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(EKEYS[gtype(nx,ny)-1]==='FIRE') onFire=true;
+        }
+        if(onFire&&Math.random()<0.005){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ═══════════════════════════════════════
+      // NEW: VOID — silent destroyer gas
+      // ═══════════════════════════════════════
+      if(key==='VOID'){
+        // Consume adjacent particles
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='ANTIMATTER'){ cc(nextGrid,x,y); break; }
+          if(nk!=='VOID'&&Math.random()<0.12) cc(nextGrid,nx,ny);
+        }
+        // Drift
+        if(Math.random()<0.05){
+          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
+          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0){
+            sc(nextGrid,ad[0],ad[1],type,temp,1); cc(nextGrid,x,y); continue;
+          }
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ═══════════════════════════════════════
+      // NEW: LIGHTNING — fast travelling bolt gas
+      // ═══════════════════════════════════════
+      if(key==='LIGHTNING'){
+        const nl=temp-8;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        const preferred=[[x,y+1],[x+1,y],[x-1,y],[x+1,y+1],[x-1,y+1],[x,y-1]];
+        for(const[nx,ny]of preferred){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny);
+          if(nt===0||Math.random()<0.7){
+            const nk=nt>0?EKEYS[nt-1]:null;
+            if(nk==='STONE'||nk==='GLASS') break;
+            if(nk){
+              if(ELEMENTS[nk]?.flammable)           sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+              else if(nk==='WATER')                  sc(nextGrid,nx,ny,EIDX.STEAM,150,0);
+              else if(nk==='ICE')                    sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+              else if(nk==='TNT')                    bigExplode(nx,ny);
+              else if(nk==='GUNPOWDER')              explode(nx,ny,4,false);
+              else if(nk==='SAND'&&Math.random()<0.2)sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+              else if(nk==='CRYSTAL')                sc(nextGrid,nx,ny,EIDX.ELECTRIC,180,0);
+              else if(nk==='VIRUS')                  cc(nextGrid,nx,ny);
+              else                                   cc(nextGrid,nx,ny);
+            }
+            if(nt===0){ sc(nextGrid,nx,ny,EIDX.LIGHTNING,nl,1); }
+            cc(nextGrid,x,y);
+            break;
+          }
+        }
+        if(Math.random()<0.15&&y>0&&gtype(x,y-1)===0)
+          sc(nextGrid,x,y-1,EIDX.SMOKE,40,0);
+        continue;
+      }
+
+      // ═══════════════════════════════════════
+      // NEW: CORAL — powder that grows near water
+      // ═══════════════════════════════════════
+      if(key==='CORAL'){
+        let hasWater=false, killed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=EKEYS[gtype(nx,ny)-1];
+          if(nk==='WATER') hasWater=true;
+          if(nk==='ACID'&&Math.random()<0.15)  { cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='FIRE'&&Math.random()<0.08)  { cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='LAVA'&&Math.random()<0.05)  { sc(nextGrid,x,y,EIDX.STONE,20,1); killed=true; break; }
+          if(nk==='VOID'&&Math.random()<0.2)   { cc(nextGrid,x,y); killed=true; break; }
+        }
+        if(killed) continue;
+        if(hasWater&&Math.random()<0.004){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            const nt=gtype(nx,ny);
+            if(nt===0&&Math.random()<0.5)                     { sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
+            if(nt>0&&EKEYS[nt-1]==='WATER'&&Math.random()<0.3){ sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
+          }
+        }
+        if(!hasWater&&Math.random()<0.0005){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ── POWDER physics (all powder-type elements) ──
+      if(elem.type==='powder'){
+        if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
+        if(mv(x,y,x,y+1,type,temp)) continue;
+        const d=Math.random()<0.5?-1:1;
+        if(mv(x,y,x+d,y+1,type,temp)) continue;
+        if(mv(x,y,x-d,y+1,type,temp)) continue;
+        // Honey traps powder
+        if(gtype(x,y+1)>0&&EKEYS[gtype(x,y+1)-1]==='HONEY'){ sc(nextGrid,x,y,type,temp,1); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ── LIQUID physics ──
       if(elem.type==='liquid'){
-        if(!settings.gravity){sc(nextGrid,x,y,type,temp,1);continue;}
-        if(mv(x,y,x,y+1,type,temp))continue;if(mv(x,y,x+dir,y,type,temp))continue;if(mv(x,y,x-dir,y,type,temp))continue;
-        if(mv(x,y,x+dir,y+1,type,temp))continue;if(mv(x,y,x-dir,y+1,type,temp))continue;
-        sc(nextGrid,x,y,type,temp,1);continue;
+        if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
+        if(mv(x,y,x,y+1,type,temp)) continue;
+        if(mv(x,y,x+dir,y,type,temp)) continue;
+        if(mv(x,y,x-dir,y,type,temp)) continue;
+        if(mv(x,y,x+dir,y+1,type,temp)) continue;
+        if(mv(x,y,x-dir,y+1,type,temp)) continue;
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ── GAS physics (fallthrough for gases not handled above) ──
+      if(elem.type==='gas'){
+        const nl=temp>0?temp-1:0;
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
+        else{
+          const d=Math.random()<0.5?-1:1;
+          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
+          else sc(nextGrid,x,y,type,nl,1);
+        }
+        continue;
       }
     }
   }
-  if(settings.wind){for(let y=0;y<ROWS;y++){if(Math.random()<0.01){for(let x=0;x<COLS-1;x++){const t=grid[gi(x,y)];if(t&&!grid[gi(x+1,y)]&&ELEMENTS[EKEYS[t-1]].type==='powder'&&Math.random()<0.3){sc(nextGrid,x+1,y,t,grid[gi(x,y)+1],0);cc(nextGrid,x,y);}}}}}
-  grid.set(nextGrid);for(let i=2;i<grid.length;i+=3)grid[i]=0;
+
+  // Wind effect
+  if(settings.wind){
+    for(let y=0;y<ROWS;y++){
+      if(Math.random()<0.01){
+        for(let x=0;x<COLS-1;x++){
+          const t=grid[gi(x,y)];
+          if(t&&!grid[gi(x+1,y)]&&ELEMENTS[EKEYS[t-1]].type==='powder'&&Math.random()<0.3){
+            sc(nextGrid,x+1,y,t,grid[gi(x,y)+1],0); cc(nextGrid,x,y);
+          }
+        }
+      }
+    }
+  }
+
+  grid.set(nextGrid);
+  for(let i=2;i<grid.length;i+=3) grid[i]=0;
 }
 
 function mv(fx,fy,tx,ty,type,temp){
-  if(tx<0||tx>=COLS||ty<0||ty>=ROWS)return false;
+  if(tx<0||tx>=COLS||ty<0||ty>=ROWS) return false;
   const tt=gtype(tx,ty);
-  if(tt===0){sc(nextGrid,tx,ty,type,temp,1);cc(nextGrid,fx,fy);return true;}
+  // Honey resists displacement by non-liquids
+  if(tt>0&&EKEYS[tt-1]==='HONEY'&&ELEMENTS[EKEYS[type-1]].type!=='liquid') return false;
+  if(tt===0){ sc(nextGrid,tx,ty,type,temp,1); cc(nextGrid,fx,fy); return true; }
   const se=ELEMENTS[EKEYS[type-1]];
-  if(tt>0){const de=ELEMENTS[EKEYS[tt-1]];if(se.density>de.density&&de.type==='liquid'&&se.type!=='solid'){sc(nextGrid,tx,ty,type,temp,1);sc(nextGrid,fx,fy,tt,nextGrid[gi(tx,ty)+1],1);return true;}}
+  if(tt>0){
+    const de=ELEMENTS[EKEYS[tt-1]];
+    if(se.density>de.density&&de.type==='liquid'&&se.type!=='gas'){
+      sc(nextGrid,tx,ty,type,temp,1);
+      sc(nextGrid,fx,fy,tt,nextGrid[gi(tx,ty)+1],1);
+      return true;
+    }
+  }
   return false;
 }
+
 function explode(cx,cy,r,chain=true){
   flash();
-  for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
-    if(dx*dx+dy*dy>r*r)continue;const nx=cx+dx,ny=cy+dy;
-    if(nx<0||nx>=COLS||ny<0||ny>=ROWS)continue;
+  for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+    if(dx*dx+dy*dy>r*r) continue;
+    const nx=cx+dx, ny=cy+dy;
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
     const nt=gtype(nx,ny);
-    if(nt>0&&chain){const nk=EKEYS[nt-1];if(nk==='TNT')setTimeout(()=>bigExplode(nx,ny),100+Math.random()*200);if(nk==='GUNPOWDER')explode(nx,ny,3,false);}
+    if(nt>0&&chain){
+      const nk=EKEYS[nt-1];
+      if(nk==='TNT')      setTimeout(()=>bigExplode(nx,ny),100+Math.random()*200);
+      if(nk==='GUNPOWDER') explode(nx,ny,3,false);
+    }
     cc(nextGrid,nx,ny);
-    if(Math.random()<0.4)sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
-    if(Math.random()<0.1)sc(nextGrid,nx,ny,EIDX.SMOKE,60,0);
+    if(Math.random()<0.4) sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+    if(Math.random()<0.1) sc(nextGrid,nx,ny,EIDX.SMOKE,60,0);
   }
 }
 function bigExplode(cx,cy){
   explode(cx,cy,10,true);
-  for(let dy=-14;dy<=14;dy++)for(let dx=-14;dx<=14;dx++){const d=dx*dx+dy*dy;if(d>=90&&d<=196){const nx=cx+dx,ny=cy+dy;if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3)sc(nextGrid,nx,ny,EIDX.FIRE,160,0);}}
+  for(let dy=-14;dy<=14;dy++) for(let dx=-14;dx<=14;dx++){
+    const d=dx*dx+dy*dy;
+    if(d>=90&&d<=196){
+      const nx=cx+dx, ny=cy+dy;
+      if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3)
+        sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
+    }
+  }
 }
-function flash(){const f=document.getElementById('flashOverlay');f.classList.add('flash');setTimeout(()=>f.classList.remove('flash'),80);}
+function flash(){
+  const f=document.getElementById('flashOverlay');
+  f.classList.add('flash');
+  setTimeout(()=>f.classList.remove('flash'),80);
+}
 
 // ══════════════════════════════════════════════
 // RENDER
@@ -557,41 +882,93 @@ function flash(){const f=document.getElementById('flashOverlay');f.classList.add
 let tick2=0;
 function render(){
   tick2++;
-  const w=canvas.width,h=canvas.height;
-  for(let i=0;i<pixels.length;i+=4){pixels[i]=26;pixels[i+1]=26;pixels[i+2]=26;pixels[i+3]=255;}
-  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
-    const type=grid[gi(x,y)];if(!type)continue;
-    const key=EKEYS[type-1];const ct=grid[gi(x,y)+1];
-    let[r,g,b]=ELEMENTS[key].color;
-    const v=(Math.random()-0.5)*10;r=Math.max(0,Math.min(255,r+v));g=Math.max(0,Math.min(255,g+v));b=Math.max(0,Math.min(255,b+v));
-    if(key==='FIRE'){const t=ct/200;r=255;g=Math.floor(t*130);b=0;}
-    if(key==='LAVA'){r=200+Math.random()*55;g=50+Math.random()*40;b=0;}
-    if(key==='ELECTRIC'){const f=Math.random()<0.5;r=f?255:200;g=f?255:220;b=f?80:0;}
-    if(key==='VIRUS'){r=150+Math.random()*80;g=0;b=180+Math.random()*75;}
-    if(key==='ANTIMATTER'){r=Math.random()*30;g=0;b=Math.random()*60;}
-    if(key==='TORNADO'){const f=Math.random()<0.3;r=f?220:170;g=f?220:170;b=f?240:200;}
-    if(key==='MAGMAROCK'){r=80+Math.random()*40;g=20+Math.random()*20;b=5;}
-    if(key==='BUBBLE'){const a=Math.sin(tick2*0.1+x*0.5)*20;r=Math.max(0,Math.min(255,120+a));g=Math.max(0,Math.min(255,200+a));b=240;}
-    if(key==='TNT'){const f=Math.random()<0.05;r=f?255:200;g=f?200:20;b=f?50:20;}
-    if(key==='STEAM'){r=g=b=180+ct/100*20;}
-    if(key==='SMOKE'){r=g=b=90+Math.random()*20;}
-    for(let py=0;py<CELL;py++)for(let px=0;px<CELL;px++){
-      const sx=x*CELL+px,sy=y*CELL+py;if(sx>=w||sy>=h)continue;
-      const pi=(sy*w+sx)*4;pixels[pi]=r;pixels[pi+1]=g;pixels[pi+2]=b;pixels[pi+3]=255;
+  const w=canvas.width, h=canvas.height;
+  for(let i=0;i<pixels.length;i+=4){ pixels[i]=26; pixels[i+1]=26; pixels[i+2]=26; pixels[i+3]=255; }
+
+  for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
+    const type=grid[gi(x,y)]; if(!type) continue;
+    const key=EKEYS[type-1];
+    const ct=grid[gi(x,y)+1];
+    let [r,g,b]=ELEMENTS[key].color;
+    const v=(Math.random()-0.5)*10;
+    r=Math.max(0,Math.min(255,r+v));
+    g=Math.max(0,Math.min(255,g+v));
+    b=Math.max(0,Math.min(255,b+v));
+
+    if(key==='FIRE')      { const t=ct/200; r=255; g=Math.floor(t*130); b=0; }
+    if(key==='LAVA')      { r=200+Math.random()*55; g=50+Math.random()*40; b=0; }
+    if(key==='ELECTRIC')  { const f=Math.random()<0.5; r=f?255:200; g=f?255:220; b=f?80:0; }
+    if(key==='VIRUS')     { r=150+Math.random()*80; g=0; b=180+Math.random()*75; }
+    if(key==='ANTIMATTER'){ r=Math.random()*30; g=0; b=Math.random()*60; }
+    if(key==='TORNADO')   { const f=Math.random()<0.3; r=f?220:170; g=f?220:170; b=f?240:200; }
+    if(key==='MAGMAROCK') { r=80+Math.random()*40; g=20+Math.random()*20; b=5; }
+    if(key==='BUBBLE')    { const a=Math.sin(tick2*0.1+x*0.5)*20; r=Math.max(0,Math.min(255,120+a)); g=Math.max(0,Math.min(255,200+a)); b=240; }
+    if(key==='TNT')       { const f=Math.random()<0.05; r=f?255:200; g=f?200:20; b=f?50:20; }
+    if(key==='STEAM')     { r=g=b=180+ct/100*20; }
+    if(key==='SMOKE')     { r=g=b=90+Math.random()*20; }
+
+    // New element rendering
+    if(key==='CRYSTAL'){
+      const phase =Math.sin(tick2*0.05+x*0.3+y*0.2)*0.5+0.5;
+      const phase2=Math.sin(tick2*0.07+x*0.2-y*0.3)*0.5+0.5;
+      r=Math.floor(120+phase*120 +Math.random()*15);
+      g=Math.floor( 60+phase2*80 +Math.random()*15);
+      b=Math.floor(200+phase*55  +Math.random()*10);
+    }
+    if(key==='HONEY'){
+      const wv=Math.sin(tick2*0.03+x*0.4)*8;
+      r=Math.floor(210+wv  +Math.random()*10);
+      g=Math.floor(140+wv*0.5+Math.random()*10);
+      b=Math.floor( 10     +Math.random()*8);
+    }
+    if(key==='VOID'){
+      r=Math.random()<0.04?Math.floor(Math.random()*40):0;
+      g=0;
+      b=Math.random()<0.04?Math.floor(Math.random()*30):0;
+    }
+    if(key==='LIGHTNING'){
+      const f=Math.random()<0.6;
+      r=f?255:180; g=f?255:200; b=255;
+    }
+    if(key==='CORAL'){
+      const wave=Math.sin(tick2*0.04+x*0.5+y*0.3)*15;
+      r=Math.floor(240+wave+Math.random()*15);
+      g=Math.floor( 70+wave*0.3+Math.random()*20);
+      b=Math.floor( 90+wave*0.5+Math.random()*15);
+    }
+
+    for(let py=0;py<CELL;py++) for(let px=0;px<CELL;px++){
+      const sx=x*CELL+px, sy=y*CELL+py;
+      if(sx>=w||sy>=h) continue;
+      const pi=(sy*w+sx)*4;
+      pixels[pi]=r; pixels[pi+1]=g; pixels[pi+2]=b; pixels[pi+3]=255;
     }
   }
+
   ctx.putImageData(imageData,0,0);
+
+  // Tornado glow overlay
   for(const t of tornadoes){
-    ctx.save();ctx.globalAlpha=0.09;
+    ctx.save(); ctx.globalAlpha=0.09;
     const gr=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,8*CELL);
-    gr.addColorStop(0,'rgba(200,200,220,1)');gr.addColorStop(1,'rgba(200,200,220,0)');
-    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(t.x*CELL,t.y*CELL,8*CELL,0,Math.PI*2);ctx.fill();ctx.restore();
+    gr.addColorStop(0,'rgba(200,200,220,1)');
+    gr.addColorStop(1,'rgba(200,200,220,0)');
+    ctx.fillStyle=gr;
+    ctx.beginPath(); ctx.arc(t.x*CELL,t.y*CELL,8*CELL,0,Math.PI*2); ctx.fill();
+    ctx.restore();
   }
-  fc++;const now=performance.now();
-  if(now-fpsT>=500){document.getElementById('fpsDisplay').textContent='FPS: '+Math.round(fc/((now-fpsT)/1000));fc=0;fpsT=now;updateStats();}
+
+  fc++;
+  const now=performance.now();
+  if(now-fpsT>=500){
+    document.getElementById('fpsDisplay').textContent='FPS: '+Math.round(fc/((now-fpsT)/1000));
+    fc=0; fpsT=now; updateStats();
+  }
 }
+
 function updateStats(){
-  let cnt=0,tot=0;for(let i=0;i<grid.length;i+=3){if(grid[i]){cnt++;tot+=grid[i+1];}}
+  let cnt=0, tot=0;
+  for(let i=0;i<grid.length;i+=3){ if(grid[i]){ cnt++; tot+=grid[i+1]; } }
   document.getElementById('tempDisplay').textContent=(cnt>0?(tot/cnt).toFixed(1):'20.0')+'°C';
   document.getElementById('pressDisplay').textContent=(1+cnt/5000).toFixed(2)+' atm';
   document.getElementById('particleDisplay').textContent=cnt.toLocaleString();
@@ -601,41 +978,50 @@ function updateStats(){
 // UI
 // ══════════════════════════════════════════════
 function buildGrid(){
-  document.getElementById('elementGrid').innerHTML=Object.entries(ELEMENTS).map(([k,e])=>`<button class="eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}" style="background:${CSS_COLORS[k]}" onclick="pick('${k}')" id="eb-${k}">${e.label}</button>`).join('');
+  document.getElementById('elementGrid').innerHTML=
+    Object.entries(ELEMENTS).map(([k,e])=>
+      `<button class="eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}"
+        style="background:${CSS_COLORS[k]}" onclick="pick('${k}')" id="eb-${k}">${e.label}</button>`
+    ).join('');
 }
-function pick(k){document.getElementById('eb-'+selElem)?.classList.remove('sel');selElem=k;document.getElementById('eb-'+k)?.classList.add('sel');}
+function pick(k){
+  document.getElementById('eb-'+selElem)?.classList.remove('sel');
+  selElem=k;
+  document.getElementById('eb-'+k)?.classList.add('sel');
+}
 
-let panelOpen=true;
 function togglePanel(){
   panelOpen=!panelOpen;
   document.getElementById('panelScroll').classList.toggle('hidden',!panelOpen);
   doResize();
 }
-function toggleSettings(){document.getElementById('settingsPanel').classList.toggle('open');}
-function toggleSetting(k,b){settings[k]=!settings[k];b.classList.toggle('on',settings[k]);}
-function clearCanvas(){grid.fill(0);for(let i=1;i<grid.length;i+=3)grid[i]=20;tornadoes=[];}
+function toggleSettings(){ document.getElementById('settingsPanel').classList.toggle('open'); }
+function toggleSetting(k,b){ settings[k]=!settings[k]; b.classList.toggle('on',settings[k]); }
+function clearCanvas(){ grid.fill(0); for(let i=1;i<grid.length;i+=3) grid[i]=20; tornadoes=[]; }
 
-document.addEventListener('click',e=>{const p=document.getElementById('settingsPanel');if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn'))p.classList.remove('open');});
+document.addEventListener('click', e=>{
+  const p=document.getElementById('settingsPanel');
+  if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn'))
+    p.classList.remove('open');
+});
 
 // ══════════════════════════════════════════════
 // RESIZE / ORIENTATION
 // ══════════════════════════════════════════════
 let resizeTO=null;
-function scheduleResize(){
-  clearTimeout(resizeTO);
-  resizeTO=setTimeout(doResize,200);
-}
-window.addEventListener('resize',scheduleResize);
-window.addEventListener('orientationchange',()=>setTimeout(scheduleResize,300));
-if(screen.orientation)screen.orientation.addEventListener('change',()=>setTimeout(scheduleResize,300));
+function scheduleResize(){ clearTimeout(resizeTO); resizeTO=setTimeout(doResize,200); }
+window.addEventListener('resize', scheduleResize);
+window.addEventListener('orientationchange', ()=>setTimeout(scheduleResize,300));
+if(screen.orientation) screen.orientation.addEventListener('change', ()=>setTimeout(scheduleResize,300));
 
 // ══════════════════════════════════════════════
 // MAIN LOOP
 // ══════════════════════════════════════════════
-function loop(){step();render();requestAnimationFrame(loop);}
+function loop(){ step(); render(); requestAnimationFrame(loop); }
 doResize();
 buildGrid();
 loop();
 </script>
+
 </body>
 </html>
