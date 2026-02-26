@@ -494,33 +494,58 @@ right: 0;
 background: linear-gradient(-90deg, var(–bg), transparent);
 }
 
+/* Center line */
 .roulette-indicator {
 position: absolute;
 left: 50%;
 top: 0; bottom: 0;
-width: 2px;
-background: var(–accent);
+width: 3px;
+background: linear-gradient(180deg, transparent 0%, var(–accent) 20%, var(–accent) 80%, transparent 100%);
 transform: translateX(-50%);
 z-index: 3;
-box-shadow: 0 0 12px var(–accent);
+box-shadow: 0 0 16px var(–accent), 0 0 32px rgba(200,168,75,0.3);
 }
 
-.roulette-indicator::before,
-.roulette-indicator::after {
-content: ‘’;
+/* Top arrow pointing DOWN */
+.roulette-arrow-top {
 position: absolute;
 left: 50%;
+top: -2px;
 transform: translateX(-50%);
-border-left: 7px solid transparent;
-border-right: 7px solid transparent;
+z-index: 10;
+width: 0; height: 0;
+border-left: 16px solid transparent;
+border-right: 16px solid transparent;
+border-top: 22px solid var(–accent);
+filter: drop-shadow(0 0 8px var(–accent));
 }
-.roulette-indicator::before {
-top: 0;
-border-top: 10px solid var(–accent);
+
+/* Bottom arrow pointing UP */
+.roulette-arrow-bottom {
+position: absolute;
+left: 50%;
+bottom: -2px;
+transform: translateX(-50%);
+z-index: 10;
+width: 0; height: 0;
+border-left: 16px solid transparent;
+border-right: 16px solid transparent;
+border-bottom: 22px solid var(–accent);
+filter: drop-shadow(0 0 8px var(–accent));
 }
-.roulette-indicator::after {
-bottom: 0;
-border-bottom: 10px solid var(–accent);
+
+/* Highlight box around selected item */
+.roulette-selector-box {
+position: absolute;
+left: 50%;
+top: 0; bottom: 0;
+width: 108px;
+transform: translateX(-50%);
+z-index: 2;
+border-left: 3px solid var(–accent);
+border-right: 3px solid var(–accent);
+background: rgba(200,168,75,0.05);
+pointer-events: none;
 }
 
 .roulette-track {
@@ -554,6 +579,18 @@ background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%)
 }
 
 .ri-emoji { font-size: 34px; position: relative; z-index: 1; }
+
+/* Winning item highlight */
+.roulette-item.winner {
+border: 2px solid var(–accent) !important;
+box-shadow: 0 0 24px rgba(200,168,75,0.5), inset 0 0 20px rgba(200,168,75,0.08);
+animation: winnerPulse 0.5s ease-out forwards;
+}
+@keyframes winnerPulse {
+0%   { transform: scale(1); }
+50%  { transform: scale(1.1); }
+100% { transform: scale(1.05); }
+}
 .ri-name {
 font-size: 9px;
 font-weight: 700;
@@ -1593,11 +1630,23 @@ function doRoulette(caseData) {
 
   const rOuter = document.createElement('div');
   rOuter.className = 'roulette-track-outer';
-  rOuter.style.height = '134px';
+  rOuter.style.cssText = 'height:150px; position:relative;';
 
   const indicator = document.createElement('div');
   indicator.className = 'roulette-indicator';
   rOuter.appendChild(indicator);
+
+  const arrowTop = document.createElement('div');
+  arrowTop.className = 'roulette-arrow-top';
+  rOuter.appendChild(arrowTop);
+
+  const arrowBottom = document.createElement('div');
+  arrowBottom.className = 'roulette-arrow-bottom';
+  rOuter.appendChild(arrowBottom);
+
+  const selectorBox = document.createElement('div');
+  selectorBox.className = 'roulette-selector-box';
+  rOuter.appendChild(selectorBox);
 
   const track = document.createElement('div');
   track.className = 'roulette-track';
@@ -1642,7 +1691,13 @@ function doRoulette(caseData) {
   track.style.transition = 'transform 7s cubic-bezier(0.05, 0.8, 0.3, 1)';
   track.style.transform = `translateX(${-scrollTo}px)`;
 
-  // After spin
+  // After spin — highlight winner then show result
+  setTimeout(() => {
+    // Highlight the winning item (index 35)
+    const items = track.querySelectorAll('.roulette-item');
+    if (items[35]) items[35].classList.add('winner');
+  }, 7100);
+
   setTimeout(() => {
     showResult(resultItem, resultKey, caseData);
   }, 7200);
