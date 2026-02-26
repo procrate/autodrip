@@ -6,33 +6,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>PowderBox v2</title>
+<title>PowderBox v3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{
   width:100%;height:100%;
-  background:#1a1a1a;color:#fff;
+  background:#111;color:#fff;
   font-family:'Segoe UI',system-ui,sans-serif;
   overflow:hidden;user-select:none;-webkit-user-select:none;
 }
 #topBar{
   position:fixed;top:0;left:0;right:0;height:44px;
-  background:#2a2a2a;border-bottom:1px solid #444;
+  background:#1e1e1e;border-bottom:1px solid #333;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 12px;z-index:100;
 }
-#fpsDisplay{font-size:11px;color:#888;font-weight:600;min-width:58px;}
-#topBar h1{font-size:15px;font-weight:700;letter-spacing:1px;}
+#fpsDisplay{font-size:11px;color:#666;font-weight:600;min-width:58px;}
+#topBar h1{font-size:15px;font-weight:700;letter-spacing:1px;color:#eee;}
 #clearBtn{
-  background:#3a3a3a;border:1px solid #555;color:#fff;
+  background:#2a2a2a;border:1px solid #444;color:#ccc;
   border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600;
   cursor:pointer;display:flex;align-items:center;gap:5px;
 }
-#clearBtn svg{width:12px;height:12px;}
+#clearBtn:active{background:#333;}
 #simCanvas{
   position:fixed;top:44px;left:0;
   display:block;cursor:crosshair;touch-action:none;
-  background:#1a1a1a;
+  background:#111;
 }
 #flashOverlay{
   position:fixed;top:44px;left:0;
@@ -44,8 +44,8 @@ html,body{
 #statsOverlay{
   position:fixed;left:10px;pointer-events:none;z-index:60;
 }
-#statsOverlay .sl{font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-bottom:1px;}
-#statsOverlay .sv{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:6px;}
+#statsOverlay .sl{font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.3);margin-bottom:1px;}
+#statsOverlay .sv{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);margin-bottom:6px;}
 #settingsBtn{
   position:fixed;width:40px;height:40px;border-radius:50%;
   background:#fff;border:none;cursor:pointer;
@@ -54,57 +54,61 @@ html,body{
 }
 #settingsBtn svg{width:20px;height:20px;}
 #settingsPanel{
-  position:fixed;background:#2a2a2a;border:1px solid #444;border-radius:14px;
-  padding:12px;width:188px;display:none;
-  box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:200;
+  position:fixed;background:#1e1e1e;border:1px solid #333;border-radius:14px;
+  padding:12px;width:200px;display:none;
+  box-shadow:0 8px 24px rgba(0,0,0,0.7);z-index:200;
 }
 #settingsPanel.open{display:block;}
-#settingsPanel h3{font-size:12px;font-weight:700;color:#ccc;margin-bottom:10px;letter-spacing:1px;}
+#settingsPanel h3{font-size:12px;font-weight:700;color:#aaa;margin-bottom:10px;letter-spacing:1px;}
 .srow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.srow label{font-size:11px;color:#aaa;}
-.tog{width:38px;height:20px;border-radius:10px;background:#555;border:none;cursor:pointer;position:relative;transition:background 0.2s;}
+.srow label{font-size:11px;color:#888;}
+.tog{width:38px;height:20px;border-radius:10px;background:#444;border:none;cursor:pointer;position:relative;transition:background 0.2s;}
 .tog.on{background:#4CAF50;}
 .tog::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;}
 .tog.on::after{left:20px;}
-.sslider{width:100%;margin-top:5px;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
+.sslider{width:100%;margin-top:5px;-webkit-appearance:none;height:4px;border-radius:2px;background:#444;outline:none;}
 .sslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;}
 #elemPanel{
-  position:fixed;background:#2a2a2a;z-index:80;overflow:hidden;
+  position:fixed;background:#1e1e1e;z-index:80;overflow:hidden;
 }
 #panelToggle{
   display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:7px;cursor:pointer;color:#ccc;font-size:12px;font-weight:600;
-  background:#252525;border-color:#3a3a3a;border-style:solid;flex-shrink:0;
+  padding:7px;cursor:pointer;color:#aaa;font-size:12px;font-weight:600;
+  background:#191919;border-color:#333;border-style:solid;flex-shrink:0;
 }
 .arrow{font-size:11px;transition:transform 0.25s;}
 #panelScroll{overflow-y:auto;overflow-x:hidden;}
 #panelScroll.hidden{display:none;}
 .panel-inner{padding:8px;}
 .brush-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.brush-row label{font-size:10px;color:#888;font-weight:600;min-width:32px;}
-#brushSlider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#555;outline:none;}
+.brush-row label{font-size:10px;color:#666;font-weight:600;min-width:32px;}
+#brushSlider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#444;outline:none;}
 #brushSlider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer;}
-#brushVal{font-size:10px;color:#ccc;font-weight:700;min-width:16px;text-align:right;}
-#elementGrid{display:grid;gap:5px;}
+#brushVal{font-size:10px;color:#aaa;font-weight:700;min-width:16px;text-align:right;}
+.cat-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:#555;margin:6px 0 4px;text-transform:uppercase;}
+#elementGrid{display:grid;gap:4px;}
 .eb{
-  border:none;border-radius:7px;padding:8px 2px;font-size:11px;font-weight:700;
+  border:none;border-radius:7px;padding:7px 2px;font-size:10px;font-weight:700;
   cursor:pointer;text-align:center;outline:none;
   transition:transform 0.1s,box-shadow 0.1s;
 }
 .eb:active{transform:scale(0.91);}
-.eb.sel{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,255,255,0.25);transform:scale(1.05);z-index:1;}
+.eb.sel{box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,255,255,0.2);transform:scale(1.05);z-index:1;}
 .eb.dk{color:rgba(0,0,0,0.8);}
 .eb.lt{color:rgba(255,255,255,0.92);}
+/* Tooltip */
+.tooltip{position:fixed;background:#000;color:#ccc;font-size:10px;padding:4px 8px;border-radius:6px;pointer-events:none;z-index:999;opacity:0;transition:opacity 0.15s;max-width:160px;line-height:1.4;border:1px solid #333;}
+.tooltip.show{opacity:1;}
 ::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-thumb{background:#555;border-radius:3px;}
+::-webkit-scrollbar-thumb{background:#444;border-radius:3px;}
 </style>
 </head>
 <body>
 <div id="topBar">
   <span id="fpsDisplay">FPS: 60</span>
-  <h1>PowderBox v2</h1>
+  <h1>PowderBox v3</h1>
   <button id="clearBtn" onclick="clearCanvas()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12">
       <polyline points="3 6 5 6 21 6"/>
       <path d="M19 6l-1 14H6L5 6"/>
       <path d="M10 11v6M14 11v6"/>
@@ -119,7 +123,7 @@ html,body{
 <div id="flashOverlay"></div>
 
 <div id="statsOverlay">
-  <div class="sl">TEMPERATURE</div><div class="sv" id="tempDisplay">20.0°C</div>
+  <div class="sl">TEMP</div><div class="sv" id="tempDisplay">20°C</div>
   <div class="sl">PRESSURE</div><div class="sv" id="pressDisplay">1.0 atm</div>
   <div class="sl">PARTICLES</div><div class="sv" id="particleDisplay">0</div>
 </div>
@@ -135,7 +139,7 @@ html,body{
   <h3>SETTINGS</h3>
   <div class="srow"><label>Gravity</label><button class="tog on" id="gravityToggle" onclick="toggleSetting('gravity',this)"></button></div>
   <div class="srow"><label>Wind</label><button class="tog" id="windToggle" onclick="toggleSetting('wind',this)"></button></div>
-  <div class="srow"><label>Heat</label><button class="tog" id="heatToggle" onclick="toggleSetting('heat',this)"></button></div>
+  <div class="srow"><label>Temperature</label><button class="tog on" id="heatToggle" onclick="toggleSetting('heat',this)"></button></div>
   <div class="srow"><label>Speed</label></div>
   <input class="sslider" type="range" min="1" max="5" value="3" oninput="simSpeed=+this.value">
 </div>
@@ -158,61 +162,77 @@ html,body{
   </div>
 </div>
 
+<div class="tooltip" id="tooltip"></div>
+
 <script>
-// ══════════════════════════════════════════════
-// ELEMENTS — ALL POWDER-BASED, NO SMOKE
-// type: 'powder' | 'liquid' | 'gas'
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// ELEMENT DEFINITIONS
+// temp field = "heat" stored as 0-255 (maps 0°C = 20, fire = 220, etc.)
+// Real-life reactions guide all interactions
+// ══════════════════════════════════════════════════════
 const ELEMENTS = {
-  SAND:      {color:[194,154,76],  density:1.5, type:'powder', flammable:false, label:'Sand'},
-  WATER:     {color:[70,130,220],  density:1.0, type:'liquid', flammable:false, label:'Water'},
-  STONE:     {color:[120,120,125], density:2.8, type:'powder', flammable:false, label:'Stone'},
-  FIRE:      {color:[230,60,10],   density:0.1, type:'gas',    flammable:false, label:'Fire'},
-  STEAM:     {color:[190,200,210], density:0.2, type:'gas',    flammable:false, label:'Steam'},
-  LAVA:      {color:[210,80,10],   density:2.0, type:'liquid', flammable:false, label:'Lava'},
-  ICE:       {color:[170,210,240], density:1.2, type:'powder', flammable:false, label:'Ice'},
-  OIL:       {color:[160,145,80],  density:0.8, type:'liquid', flammable:true,  label:'Oil'},
-  WOOD:      {color:[140,80,30],   density:2.2, type:'powder', flammable:true,  label:'Wood'},
-  ACID:      {color:[50,220,30],   density:1.1, type:'liquid', flammable:false, label:'Acid'},
-  SALT:      {color:[230,230,230], density:1.4, type:'powder', flammable:false, label:'Salt'},
-  GUNPOWDER: {color:[80,75,80],    density:1.2, type:'powder', flammable:true,  label:'Powder'},
-  PLANT:     {color:[30,160,40],   density:1.0, type:'powder', flammable:true,  label:'Plant'},
-  GLASS:     {color:[160,210,230], density:2.5, type:'powder', flammable:false, label:'Glass'},
-  TNT:       {color:[220,30,30],   density:2.0, type:'powder', flammable:false, label:'TNT'},
-  VIRUS:     {color:[180,0,220],   density:1.3, type:'powder', flammable:false, label:'Virus'},
-  ANTIMATTER:{color:[20,20,40],    density:0.5, type:'gas',    flammable:false, label:'Anti'},
-  TORNADO:   {color:[180,180,200], density:0.3, type:'gas',    flammable:false, label:'Tornado'},
-  MAGMAROCK: {color:[100,40,10],   density:3.0, type:'powder', flammable:false, label:'Magma'},
-  BUBBLE:    {color:[150,230,255], density:0.15,type:'gas',    flammable:false, label:'Bubble'},
-  ELECTRIC:  {color:[255,255,50],  density:0.4, type:'gas',    flammable:false, label:'Elec'},
-  CRYSTAL:   {color:[180,100,255], density:2.2, type:'powder', flammable:false, label:'Crystal'},
-  HONEY:     {color:[220,160,20],  density:1.6, type:'liquid', flammable:true,  label:'Honey'},
-  VOID:      {color:[5,0,15],      density:0.0, type:'gas',    flammable:false, label:'Void'},
-  LIGHTNING: {color:[200,220,255], density:0.1, type:'gas',    flammable:false, label:'Ltning'},
-  CORAL:     {color:[255,80,100],  density:1.8, type:'powder', flammable:false, label:'Coral'},
-  FREEZE:    {color:[160,240,255], density:0.15,type:'gas',    flammable:false, label:'Freeze'},
-  RUBBER:    {color:[40,200,80],   density:1.4, type:'powder', flammable:false, label:'Rubber'},
-  NUKE:      {color:[60,255,60],   density:3.5, type:'powder', flammable:false, label:'NUKE'},
-  ERASER:    {color:[60,60,60],    density:0,   type:'eraser', flammable:false, label:'Erase'},
+  // ── POWDERS ──
+  SAND:      {color:[194,154,76],  density:1.5, type:'powder', flammable:false, label:'Sand',      tip:'Melts into glass at high heat. Sinks in water.'},
+  STONE:     {color:[130,130,135], density:2.8, type:'powder', flammable:false, label:'Stone',     tip:'Very dense. Melts into lava under extreme heat.'},
+  SALT:      {color:[235,235,240], density:1.4, type:'powder', flammable:false, label:'Salt',      tip:'Dissolves in water. Lowers water freezing point.'},
+  GUNPOWDER: {color:[85,80,85],    density:1.2, type:'powder', flammable:true,  label:'Powder',    tip:'Ignites near fire. Chain-explodes.'},
+  WOOD:      {color:[140,90,35],   density:2.2, type:'powder', flammable:true,  label:'Wood',      tip:'Burns slowly. Produces charcoal then ash.'},
+  COAL:      {color:[50,50,55],    density:1.6, type:'powder', flammable:true,  label:'Coal',      tip:'Burns hot and long. Turns to ash.'},
+  ASH:       {color:[160,158,155], density:0.6, type:'powder', flammable:false, label:'Ash',       tip:'Residue from burning. Floats on water.'},
+  ICE:       {color:[180,215,245], density:0.92,type:'powder', flammable:false, label:'Ice',       tip:'Melts to water in heat. Expands slightly.'},
+  GLASS:     {color:[170,215,235], density:2.5, type:'powder', flammable:false, label:'Glass',     tip:'Sand melted at 1700°C. Shatters from explosions.'},
+  TNT:       {color:[220,40,40],   density:2.0, type:'powder', flammable:false, label:'TNT',       tip:'Explodes violently from fire or shock.'},
+  PLANT:     {color:[35,165,45],   density:1.0, type:'powder', flammable:true,  label:'Plant',     tip:'Grows toward water. Burns easily. Needs water.'},
+  MAGMAROCK: {color:[110,45,15],   density:3.0, type:'powder', flammable:false, label:'Basalt',    tip:'Solidified lava. Releases lava when heated.'},
+  CRYSTAL:   {color:[180,110,255], density:2.2, type:'powder', flammable:false, label:'Crystal',   tip:'Grows slowly. Conducts electricity. Shatters in acid.'},
+  RUBBER:    {color:[50,195,80],   density:1.4, type:'powder', flammable:false, label:'Rubber',    tip:'Bounces off surfaces. Insulates electricity.'},
+  NUKE:      {color:[50,255,50],   density:3.5, type:'powder', flammable:false, label:'NUKE',      tip:'Nuclear payload. Triggered by fire or electricity.'},
+  CORAL:     {color:[255,85,105],  density:1.8, type:'powder', flammable:false, label:'Coral',     tip:'Grows in water. Dies in acid or heat.'},
+  CONCRETE:  {color:[175,170,165], density:2.4, type:'powder', flammable:false, label:'Concrete',  tip:'Hardens on contact with water. Inert when set.'},
+  SULFUR:    {color:[210,200,50],  density:2.0, type:'powder', flammable:true,  label:'Sulfur',    tip:'Burns with blue flame → sulfur dioxide gas.'},
+  IRON:      {color:[160,160,170], density:7.8, type:'powder', flammable:false, label:'Iron',      tip:'Rusts in water over time. Melts in lava.'},
+  SNOW:      {color:[230,240,255], density:0.5, type:'powder', flammable:false, label:'Snow',      tip:'Cold powder. Melts to water in heat.'},
+  ERASER:    {color:[60,60,60],    density:0,   type:'eraser', flammable:false, label:'Erase',     tip:'Remove particles.'},
+
+  // ── LIQUIDS ──
+  WATER:     {color:[60,130,220],  density:1.0, type:'liquid', flammable:false, label:'Water',     tip:'Evaporates in heat → steam. Freezes in cold.'},
+  LAVA:      {color:[210,85,15],   density:2.0, type:'liquid', flammable:false, label:'Lava',      tip:'1200°C molten rock. Solidifies on water contact.'},
+  OIL:       {color:[165,150,85],  density:0.8, type:'liquid', flammable:true,  label:'Oil',       tip:'Floats on water. Burns intensely.'},
+  ACID:      {color:[55,225,35],   density:1.2, type:'liquid', flammable:false, label:'Acid',      tip:'Dissolves most materials. Neutralized by water.'},
+  HONEY:     {color:[220,165,25],  density:1.6, type:'liquid', flammable:true,  label:'Honey',     tip:'Very viscous. Crystallizes slowly. Ferments.'},
+  MERCURY:   {color:[200,205,210], density:13.5,type:'liquid', flammable:false, label:'Mercury',   tip:'Very dense liquid metal. Vaporizes in heat.'},
+  SALTWATER: {color:[60,120,200],  density:1.03,type:'liquid', flammable:false, label:'Brine',     tip:'Salted water. Lower freezing point. Conducts better.'},
+  ALCOHOL:   {color:[200,230,255], density:0.79,type:'liquid', flammable:true,  label:'Alcohol',   tip:'Highly flammable. Evaporates quickly.'},
+
+  // ── GASES ──
+  FIRE:      {color:[230,65,15],   density:0.1, type:'gas',    flammable:false, label:'Fire',      tip:'Burns flammables. Evaporates water. Rises.'},
+  STEAM:     {color:[195,205,215], density:0.2, type:'gas',    flammable:false, label:'Steam',     tip:'Condenses to water when cooled.'},
+  SMOKE:     {color:[110,108,105], density:0.25,type:'gas',    flammable:false, label:'Smoke',     tip:'Carbon particles from combustion. Disperses upward.'},
+  ELECTRIC:  {color:[255,255,60],  density:0.4, type:'gas',    flammable:false, label:'Spark',     tip:'Electrical discharge. Ignites flammables.'},
+  LIGHTNING: {color:[210,230,255], density:0.1, type:'gas',    flammable:false, label:'Bolt',      tip:'High-voltage arc. Melts sand to glass.'},
+  TORNADO:   {color:[185,185,205], density:0.3, type:'gas',    flammable:false, label:'Tornado',   tip:'Violent vortex. Picks up and flings particles.'},
+  FREEZE:    {color:[165,245,255], density:0.15,type:'gas',    flammable:false, label:'Freeze',    tip:'Cryo spray. Instantly freezes liquids and gases.'},
+  BUBBLE:    {color:[155,235,255], density:0.15,type:'gas',    flammable:false, label:'Bubble',    tip:'Air bubble in liquid. Rises and pops.'},
+  ANTIMATTER:{color:[20,10,45],    density:0.5, type:'gas',    flammable:false, label:'Antimatter',tip:'Annihilates any matter it contacts.'},
+  VOID:      {color:[5,0,15],      density:0.0, type:'gas',    flammable:false, label:'Void',      tip:'Absolute vacuum. Consumes everything nearby.'},
+  VIRUS:     {color:[185,5,225],   density:1.3, type:'gas',    flammable:false, label:'Virus',     tip:'Infects and converts nearby particles.'},
+  CO2:       {color:[100,130,150], density:0.6, type:'gas',    flammable:false, label:'CO₂',       tip:'Carbon dioxide. Extinguishes fire. Heavier than air.'},
+  METHANE:   {color:[140,200,160], density:0.35,type:'gas',    flammable:true,  label:'Methane',   tip:'Highly flammable gas. Explodes in air near flame.'},
 };
 
-const CSS_COLORS = {
-  SAND:'#c29a4c',WATER:'#4682dc',STONE:'#787880',FIRE:'#e63c0a',STEAM:'#bec8d2',
-  LAVA:'#d2500a',ICE:'#aad2f0',OIL:'#a09150',WOOD:'#8c501e',
-  ACID:'#32dc1e',SALT:'#e6e6e6',GUNPOWDER:'#504b50',PLANT:'#1ea028',GLASS:'#a0d2e6',
-  TNT:'#dc1e1e',VIRUS:'#b400dc',ANTIMATTER:'#141428',TORNADO:'#b4b4c8',MAGMAROCK:'#641e0a',
-  BUBBLE:'#96e6ff',ELECTRIC:'#d4d400',
-  CRYSTAL:'#b464ff',HONEY:'#dc9a14',VOID:'#050010',LIGHTNING:'#c8dcff',CORAL:'#ff5064',
-  FREEZE:'#a0f0ff',RUBBER:'#28c850',NUKE:'#3cff3c',
-  ERASER:'#3c3c3c',
-};
+const CSS_COLORS = {};
+Object.entries(ELEMENTS).forEach(([k,e])=>{
+  const [r,g,b]=e.color;
+  CSS_COLORS[k]=`rgb(${r},${g},${b})`;
+});
 
-const DARK_TEXT = new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM',
-  'BUBBLE','TORNADO','HONEY','LIGHTNING','CRYSTAL','FREEZE','RUBBER','NUKE']);
+const DARK_TEXT = new Set(['SAND','WATER','ICE','OIL','SALT','GLASS','STEAM','BUBBLE',
+  'TORNADO','HONEY','LIGHTNING','CRYSTAL','FREEZE','RUBBER','NUKE','SNOW','CONCRETE',
+  'SULFUR','MERCURY','SALTWATER','ALCOHOL','CO2','METHANE','SMOKE','ASH']);
 
 const EKEYS = Object.keys(ELEMENTS);
 const EIDX  = {};
-EKEYS.forEach((k,i) => EIDX[k] = i+1);
+EKEYS.forEach((k,i)=>EIDX[k]=i+1);
 
 // ══════════════════════════════════════════════
 // CANVAS & GRID
@@ -225,17 +245,21 @@ let grid, nextGrid, imageData, pixels;
 
 let selElem='SAND', brushSize=3, drawing=false, lx=0, ly=0;
 let simSpeed=3, fc=0, fpsT=performance.now();
-let settings = {gravity:true, wind:false, heat:false};
+let settings = {gravity:true, wind:false, heat:true};
 let tornadoes = [];
 const rubberVel = new Map();
+// Track concrete "wet" state: key → age counter
+const concreteAge = new Map();
 
 function gi(x,y){ return (y*COLS+x)*3; }
-function gtype(x,y){ if(x<0||x>=COLS||y<0||y>=ROWS) return -1; return grid[gi(x,y)]; }
+function gtype(x,y){ if(x<0||x>=COLS||y<0||y>=ROWS)return -1; return grid[gi(x,y)]; }
+function gntype(g,x,y){ if(x<0||x>=COLS||y<0||y>=ROWS)return -1; return g[gi(x,y)]; }
 function sc(arr,x,y,t,temp=20,f=0){ const i=(y*COLS+x)*3; arr[i]=t; arr[i+1]=Math.min(Math.max(temp,0),255); arr[i+2]=f; }
 function cc(arr,x,y){ const i=(y*COLS+x)*3; arr[i]=0; arr[i+1]=20; arr[i+2]=0; }
+function gkey(x,y){ const t=gtype(x,y); return t>0?EKEYS[t-1]:null; }
 
-const PORTRAIT_PANEL_H  = 210;
-const LANDSCAPE_PANEL_W = 172;
+const PORTRAIT_PANEL_H  = 220;
+const LANDSCAPE_PANEL_W = 175;
 let panelOpen = true;
 
 function doResize(){
@@ -259,6 +283,7 @@ function doResize(){
   pixels   = imageData.data;
   tornadoes= [];
   rubberVel.clear();
+  concreteAge.clear();
   layoutUI(isLandscape, TOP, cw, ch, PANEL_W, PANEL_H);
 }
 
@@ -268,37 +293,31 @@ function layoutUI(landscape, TOP, cw, ch, pw, ph){
   const arrow=document.getElementById('arrowIcon');
   const tog=document.getElementById('panelToggle');
   if(landscape){
-    ep.style.top=TOP+'px'; ep.style.right='0px'; ep.style.bottom='0px';
-    ep.style.left=''; ep.style.width=LANDSCAPE_PANEL_W+'px'; ep.style.height='';
-    ep.style.borderTop='none'; ep.style.borderLeft='1px solid #444';
-    ep.style.flexDirection='column'; ep.style.display='flex';
-    tog.style.borderBottom='1px solid #3a3a3a'; tog.style.borderRight='none';
+    ep.style.cssText=`top:${TOP}px;right:0;bottom:0;left:auto;width:${LANDSCAPE_PANEL_W}px;height:auto;border-top:none;border-left:1px solid #333;flex-direction:column;display:flex;`;
+    tog.style.cssText='border-bottom:1px solid #2a2a2a;border-right:none;';
     if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(ch-34)+'px'; }
     document.getElementById('elementGrid').style.gridTemplateColumns='repeat(2,1fr)';
     arrow.innerHTML='&#x25B6;';
     arrow.style.transform=panelOpen?'':'rotate(180deg)';
     const so=document.getElementById('statsOverlay');
-    so.style.bottom='10px'; so.style.top='auto'; so.style.left='10px';
+    so.style.cssText='bottom:10px;top:auto;left:10px;';
     const sb=document.getElementById('settingsBtn');
-    sb.style.bottom='10px'; sb.style.top='auto'; sb.style.right='10px';
+    sb.style.cssText='bottom:10px;top:auto;right:10px;';
     const sp=document.getElementById('settingsPanel');
-    sp.style.bottom='60px'; sp.style.top='auto'; sp.style.right=(LANDSCAPE_PANEL_W+6)+'px';
+    sp.style.cssText=`bottom:60px;top:auto;right:${LANDSCAPE_PANEL_W+6}px;`;
   } else {
-    ep.style.left='0px'; ep.style.right='0px'; ep.style.bottom='0px'; ep.style.top='';
-    ep.style.width=''; ep.style.height=panelOpen?PORTRAIT_PANEL_H+'px':'34px';
-    ep.style.borderLeft='none'; ep.style.borderTop='1px solid #444';
-    ep.style.flexDirection='column'; ep.style.display='flex';
-    tog.style.borderBottom='1px solid #3a3a3a';
+    ep.style.cssText=`left:0;right:0;bottom:0;top:auto;width:auto;height:${panelOpen?PORTRAIT_PANEL_H:34}px;border-left:none;border-top:1px solid #333;flex-direction:column;display:flex;`;
+    tog.style.cssText='border-bottom:1px solid #2a2a2a;';
     if(panelOpen){ ps.style.overflowY='auto'; ps.style.height=(PORTRAIT_PANEL_H-34)+'px'; }
     document.getElementById('elementGrid').style.gridTemplateColumns='repeat(4,1fr)';
     arrow.innerHTML='&#x2227;';
     arrow.style.transform=panelOpen?'':'rotate(180deg)';
     const so=document.getElementById('statsOverlay');
-    so.style.bottom=(panelOpen?PORTRAIT_PANEL_H+10:44)+'px'; so.style.top='auto';
+    so.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+10:44}px;top:auto;left:10px;`;
     const sb=document.getElementById('settingsBtn');
-    sb.style.bottom=(panelOpen?PORTRAIT_PANEL_H+8:42)+'px'; sb.style.top='auto'; sb.style.right='10px';
+    sb.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+8:42}px;top:auto;right:10px;`;
     const sp=document.getElementById('settingsPanel');
-    sp.style.bottom=(panelOpen?PORTRAIT_PANEL_H+56:100)+'px'; sp.style.top='auto'; sp.style.right='10px';
+    sp.style.cssText=`bottom:${panelOpen?PORTRAIT_PANEL_H+56:100}px;top:auto;right:10px;`;
   }
 }
 
@@ -316,15 +335,20 @@ function paint(cx,cy){
     if(dx*dx+dy*dy>r*r) continue;
     const nx=cx+dx, ny=cy+dy;
     if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-    if(selElem==='ERASER'){ cc(grid,nx,ny); rubberVel.delete(nx+','+ny); continue; }
+    if(selElem==='ERASER'){ cc(grid,nx,ny); rubberVel.delete(nx+','+ny); concreteAge.delete(nx+','+ny); continue; }
     if(gtype(nx,ny)===0){
       let temp=20;
-      if(selElem==='FIRE'||selElem==='LAVA') temp=200;
-      if(selElem==='ELECTRIC')               temp=180;
-      if(selElem==='TORNADO')                temp=150;
-      if(selElem==='LIGHTNING')              temp=220;
-      if(selElem==='FREEZE')                 temp=180;
-      if(selElem==='NUKE')                   temp=50;
+      if(selElem==='FIRE')      temp=220;
+      if(selElem==='LAVA')      temp=240;
+      if(selElem==='ELECTRIC')  temp=200;
+      if(selElem==='LIGHTNING') temp=240;
+      if(selElem==='FREEZE')    temp=200;
+      if(selElem==='NUKE')      temp=50;
+      if(selElem==='METHANE')   temp=30;
+      if(selElem==='TORNADO')   temp=180;
+      if(selElem==='COAL')      temp=30;
+      if(selElem==='SNOW')      temp=5;
+      if(selElem==='ICE')       temp=5;
       sc(grid,nx,ny,EIDX[selElem],temp);
       if(selElem==='TORNADO') tornadoes.push({x:nx,y:ny,life:200});
       if(selElem==='RUBBER')  rubberVel.set(nx+','+ny,{vx:0,vy:1});
@@ -341,13 +365,34 @@ function line(x0,y0,x1,y1){
     if(e2<dx) {err+=dx;y0+=sy;}
   }
 }
-canvas.addEventListener('mousedown', e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
-canvas.addEventListener('mousemove', e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
-canvas.addEventListener('mouseup',   ()=>drawing=false);
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;});
+canvas.addEventListener('mouseup',  ()=>drawing=false);
 canvas.addEventListener('mouseleave',()=>drawing=false);
 canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=gpos(e);lx=p.x;ly=p.y;paint(p.x,p.y);},{passive:false});
 canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing)return;const p=gpos(e);line(lx,ly,p.x,p.y);lx=p.x;ly=p.y;},{passive:false});
 canvas.addEventListener('touchend',  e=>{e.preventDefault();drawing=false;},{passive:false});
+
+// ══════════════════════════════════════════════
+// MOVEMENT
+// ══════════════════════════════════════════════
+function mv(fg,ng,fx,fy,tx,ty,type,temp){
+  if(tx<0||tx>=COLS||ty<0||ty>=ROWS) return false;
+  const tt=gntype(fg,tx,ty);
+  // Don't move into honey if we're a solid powder
+  if(tt>0&&EKEYS[tt-1]==='HONEY'&&ELEMENTS[EKEYS[type-1]].type==='powder') return false;
+  // Empty cell
+  if(tt===0){ sc(ng,tx,ty,type,temp,1); cc(ng,fx,fy); return true; }
+  // Density displacement (sinking/floating)
+  const se=ELEMENTS[EKEYS[type-1]];
+  const de=ELEMENTS[EKEYS[tt-1]];
+  if(se.density>de.density&&de.type==='liquid'&&se.type!=='gas'){
+    sc(ng,tx,ty,type,temp,1);
+    sc(ng,fx,fy,tt,fg[gi(tx,ty)+1],1);
+    return true;
+  }
+  return false;
+}
 
 // ══════════════════════════════════════════════
 // SIMULATION
@@ -363,10 +408,21 @@ function buildShuf(){
 
 function step(){ for(let s=0;s<simSpeed;s++) tick(); }
 
+// Helper: spread heat from hot elements to neighbors
+function heatNeighbors(ng,x,y,amount){
+  if(!settings.heat) return;
+  for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+    if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    const i=gi(nx,ny);
+    if(ng[i]) ng[i+1]=Math.min(255,ng[i+1]+amount);
+  }
+}
+
 function tick(){
   nextGrid.set(grid);
   buildShuf();
 
+  // Update tornado positions
   tornadoes=tornadoes.filter(t=>{
     t.life--;
     t.x+=Math.floor((Math.random()-0.5)*3);
@@ -382,93 +438,728 @@ function tick(){
       const type=grid[ii];
       if(!type) continue;
       const temp=grid[ii+1];
-      if(grid[ii+2]&1) continue;
+      if(grid[ii+2]&1) continue; // already moved
       const key=EKEYS[type-1];
       const elem=ELEMENTS[key];
 
-      // ── FIRE ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // FIRE — real combustion physics
+      // Burns O2 → CO2 + heat; ignites flammables
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='FIRE'){
+        const nl=temp-3;
+        if(nl<=0){
+          sc(nextGrid,x,y,EIDX.SMOKE,60,1); // fire → smoke when dying
+          continue;
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        heatNeighbors(nextGrid,x,y,8);
+
+        // Rise naturally
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.5){
+          sc(nextGrid,x,y-1,EIDX.FIRE,nl-15,1); cc(nextGrid,x,y); continue;
+        }
+
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          // Ignite flammables
+          if(ELEMENTS[nk].flammable&&Math.random()<0.06)       sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+          // Water → steam (boiling)
+          if(nk==='WATER'&&Math.random()<0.08)                  sc(nextGrid,nx,ny,EIDX.STEAM,140,0);
+          // Saltwater → steam too
+          if(nk==='SALTWATER'&&Math.random()<0.06)              sc(nextGrid,nx,ny,EIDX.STEAM,140,0);
+          // Ice → water (melting, endothermic)
+          if(nk==='ICE'&&Math.random()<0.12)                    sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          // Snow → water
+          if(nk==='SNOW'&&Math.random()<0.18)                   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          // Gunpowder → explosion
+          if(nk==='GUNPOWDER'&&Math.random()<0.35)              explode(nx,ny,5,true);
+          // TNT → big explosion
+          if(nk==='TNT'&&Math.random()<0.18)                    bigExplode(nx,ny);
+          // Bubble: air bubbles pop near fire
+          if(nk==='BUBBLE'&&Math.random()<0.25)                 cc(nextGrid,nx,ny);
+          // Crystal → shatters
+          if(nk==='CRYSTAL'&&Math.random()<0.04)                cc(nextGrid,nx,ny);
+          // Honey caramelizes/burns
+          if(nk==='HONEY'&&Math.random()<0.07)                  sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          // Coral bleaches/dies
+          if(nk==='CORAL'&&Math.random()<0.09)                  cc(nextGrid,nx,ny);
+          // Rubber melts in intense heat
+          if(nk==='RUBBER'&&Math.random()<0.05)                 cc(nextGrid,nx,ny);
+          // NUKE detonates
+          if(nk==='NUKE'&&Math.random()<0.06)                   nukeExplode(nx,ny);
+          // Freeze cloud extinguished by fire
+          if(nk==='FREEZE'&&Math.random()<0.4)                  cc(nextGrid,nx,ny);
+          // Sand → glass at 1700°C (fire approximated)
+          if(nk==='SAND'&&Math.random()<0.008)                  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          // Methane ignites explosively
+          if(nk==='METHANE'&&Math.random()<0.25)                explode(nx,ny,6,false);
+          // Alcohol ignites easily
+          if(nk==='ALCOHOL'&&Math.random()<0.15)                sc(nextGrid,nx,ny,EIDX.FIRE,210,0);
+          // Mercury vaporizes (toxic)
+          if(nk==='MERCURY'&&Math.random()<0.04)                cc(nextGrid,nx,ny);
+          // Sulfur ignites → blue flame + SO2 (CO2 proxy)
+          if(nk==='SULFUR'&&Math.random()<0.08)                 sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          // Concrete stays solid in fire
+          // Iron turns red-hot but stays
+          if(nk==='IRON'&&Math.random()<0.001)                  sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Stone melts to lava at extreme temp
+          if(nk==='STONE'&&Math.random()<0.002)                 sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // CO2 extinguishes fire
+          if(nk==='CO2'){
+            cc(nextGrid,x,y); // fire dies in CO2 atmosphere
+            break;
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SMOKE — carbon aerosol, rises, disperses
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SMOKE'){
         const nl=temp-2;
-        // fire just disappears when lifetime ends — no smoke
         if(nl<=0){ cc(nextGrid,x,y); continue; }
         sc(nextGrid,x,y,type,nl,1);
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=gtype(nx,ny); if(!nt) continue;
-          const nk=EKEYS[nt-1];
-          if(ELEMENTS[nk].flammable&&Math.random()<0.05)  sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-          if(nk==='ICE'&&Math.random()<0.1)                sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-          if(nk==='WATER'&&Math.random()<0.03)             sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
-          if(nk==='GUNPOWDER'&&Math.random()<0.3)          explode(nx,ny,5,false);
-          if(nk==='TNT'&&Math.random()<0.15)               bigExplode(nx,ny);
-          if(nk==='BUBBLE'&&Math.random()<0.2)             cc(nextGrid,nx,ny);
-          if(nk==='CRYSTAL'&&Math.random()<0.03)           cc(nextGrid,nx,ny);
-          if(nk==='HONEY'&&Math.random()<0.06)             sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
-          if(nk==='CORAL'&&Math.random()<0.08)             cc(nextGrid,nx,ny);
-          if(nk==='RUBBER'&&Math.random()<0.04)            cc(nextGrid,nx,ny);
-          if(nk==='NUKE'&&Math.random()<0.05)              nukeExplode(nx,ny);
-          if(nk==='FREEZE'&&Math.random()<0.3)             cc(nextGrid,nx,ny);
-        }
-        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x,y-1,EIDX.FIRE,nl-10,1); cc(nextGrid,x,y); }
+        const r2=Math.random();
+        if(y>0&&gtype(x,y-1)===0&&r2<0.55){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        // drift sideways
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
         continue;
       }
 
-      // ── STEAM ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // STEAM — water vapor, condenses when cool
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='STEAM'){
-        const nl=temp>0?temp-1:0;
-        // steam condenses back to water at end of life, no smoke
-        if(nl<=0){ Math.random()<0.04?sc(nextGrid,x,y,EIDX.WATER,20,1):cc(nextGrid,x,y); continue; }
-        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
-        else{
-          const d=Math.random()<0.5?-1:1;
-          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
-          else sc(nextGrid,x,y,type,nl,1);
+        const nl=temp>0?temp-2:0;
+        if(nl<=0){
+          // Condense back to water (realistic: steam → water at 100°C)
+          Math.random()<0.06?sc(nextGrid,x,y,EIDX.WATER,20,1):cc(nextGrid,x,y);
+          continue;
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // WATER — universal solvent, phase changes
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='WATER'){
+        // Freeze in cold → ice
+        if(settings.heat&&temp<8&&Math.random()<0.03){ sc(nextGrid,x,y,EIDX.ICE,5,1); continue; }
+
+        let reacted=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny);
+          if(!nk) continue;
+
+          // Lava → obsidian/stone + steam
+          if(nk==='LAVA'&&Math.random()<0.1){
+            sc(nextGrid,nx,ny,EIDX.STONE,20,0);
+            sc(nextGrid,x,y,EIDX.STEAM,140,1); reacted=true; break;
+          }
+          // Salt dissolves in water → saltwater
+          if(nk==='SALT'&&Math.random()<0.015){
+            sc(nextGrid,nx,ny,EIDX.SALTWATER,20,0);
+            cc(nextGrid,x,y); reacted=true; break;
+          }
+          // Iron rusts slowly in water
+          if(nk==='IRON'&&Math.random()<0.0005){
+            sc(nextGrid,nx,ny,EIDX.STONE,20,0); // rust → iron oxide (approximate as stone color)
+          }
+          // Concrete + water → hardens over time
+          if(nk==='CONCRETE'&&!concreteAge.has(nx+','+ny)){
+            concreteAge.set(nx+','+ny, 0);
+          }
+          // Fire → steam
+          if(nk==='FIRE'&&Math.random()<0.1){
+            sc(nextGrid,x,y,EIDX.STEAM,140,1); reacted=true; break;
+          }
+          // Plant absorbs water
+          if(nk==='PLANT'&&Math.random()<0.008){ cc(nextGrid,x,y); reacted=true; break; }
+          // Snow absorbs water → water
+          if(nk==='SNOW'&&Math.random()<0.02){ sc(nextGrid,nx,ny,EIDX.WATER,20,0); }
+        }
+        if(reacted) continue;
+        // Flow like liquid
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
         }
         continue;
       }
 
-      // ── LAVA ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // LAVA — molten rock, ~1200°C
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='LAVA'){
-        if(Math.random()<0.04){
-          const fx=x+(Math.random()<0.5?-1:1);
-          if(fx>=0&&fx<COLS&&y-1>=0&&gtype(fx,y-1)===0) sc(nextGrid,fx,y-1,EIDX.FIRE,180,0);
+        heatNeighbors(nextGrid,x,y,12);
+        if(Math.random()<0.05){
+          const fx2=x+(Math.random()<0.5?-1:1);
+          if(fx2>=0&&fx2<COLS&&y-1>=0&&gtype(fx2,y-1)===0) sc(nextGrid,fx2,y-1,EIDX.FIRE,220,0);
         }
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if(nk==='WATER'&&Math.random()<0.08)  { sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
-          if(nk==='ICE'&&Math.random()<0.1)       sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-          if(nk==='CRYSTAL'&&Math.random()<0.04)  sc(nextGrid,nx,ny,EIDX.MAGMAROCK,20,0);
-          if(nk==='WOOD'&&Math.random()<0.03)     sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-          if(nk==='CORAL'&&Math.random()<0.05)    sc(nextGrid,nx,ny,EIDX.STONE,20,0);
-          if(nk==='FREEZE'&&Math.random()<0.3)    cc(nextGrid,nx,ny);
-          if(nk==='NUKE'&&Math.random()<0.03)     nukeExplode(nx,ny);
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Water → basalt/stone + steam (realistic!)
+          if(nk==='WATER'&&Math.random()<0.1){
+            sc(nextGrid,x,y,EIDX.STONE,20,1); // lava quenches
+            sc(nextGrid,nx,ny,EIDX.STEAM,160,0);
+            break;
+          }
+          // Saltwater → same
+          if(nk==='SALTWATER'&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.STONE,20,1);
+            sc(nextGrid,nx,ny,EIDX.STEAM,160,0); break;
+          }
+          // Ice → water then steam
+          if(nk==='ICE'&&Math.random()<0.12)      sc(nextGrid,nx,ny,EIDX.WATER,80,0);
+          // Snow → water
+          if(nk==='SNOW'&&Math.random()<0.2)       sc(nextGrid,nx,ny,EIDX.WATER,80,0);
+          // Crystal melts to lava
+          if(nk==='CRYSTAL'&&Math.random()<0.05)   sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Wood ignites
+          if(nk==='WOOD'&&Math.random()<0.04)      sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+          // Coal ignites
+          if(nk==='COAL'&&Math.random()<0.05)      sc(nextGrid,nx,ny,EIDX.FIRE,240,0);
+          // Coral → stone
+          if(nk==='CORAL'&&Math.random()<0.06)     sc(nextGrid,nx,ny,EIDX.STONE,20,0);
+          // Freeze cloud neutralized
+          if(nk==='FREEZE'&&Math.random()<0.35)    cc(nextGrid,nx,ny);
+          // Iron melts
+          if(nk==='IRON'&&Math.random()<0.02)      sc(nextGrid,nx,ny,EIDX.LAVA,240,0);
+          // Rubber melts/burns
+          if(nk==='RUBBER'&&Math.random()<0.08)    cc(nextGrid,nx,ny);
+          // NUKE
+          if(nk==='NUKE'&&Math.random()<0.03)      nukeExplode(nx,ny);
+          // Sand → glass
+          if(nk==='SAND'&&Math.random()<0.04)      sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          // Concrete stays solid
         }
+        // Lava flows like liquid
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
       }
 
-      // ── ACID ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ACID — sulfuric/hydrochloric; corrodes metals, stone, organic
+      // Neutralized by water (dilution). Produces CO2 with carbonates.
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='ACID'){
+        let consumed=false;
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
           const nt=gtype(nx,ny); if(!nt) continue;
           const nk=EKEYS[nt-1];
-          if(nk!=='ACID'&&nk!=='ANTIMATTER'&&nk!=='VOID'&&nk!=='NUKE'&&Math.random()<0.02){
-            cc(nextGrid,nx,ny); if(Math.random()<0.3) cc(nextGrid,x,y);
+          if(nk==='ACID'||nk==='VOID'||nk==='NUKE'||nk==='ANTIMATTER') continue;
+
+          // Water dilutes acid (realistic: exothermic neutralization)
+          if(nk==='WATER'&&Math.random()<0.008){
+            cc(nextGrid,nx,ny); // water consumed
+            if(Math.random()<0.35) cc(nextGrid,x,y); // acid also weakened
+            consumed=true; break;
           }
-          if(nk==='CRYSTAL'&&Math.random()<0.08){ cc(nextGrid,nx,ny); if(Math.random()<0.2) cc(nextGrid,x,y); }
-          if(nk==='CORAL'&&Math.random()<0.15)   cc(nextGrid,nx,ny);
-          if(nk==='NUKE'&&Math.random()<0.008)   nukeExplode(nx,ny);
+          // Stone/concrete reacts with acid → CO2 (carbonate reaction: CaCO3 + HCl)
+          if((nk==='STONE'||nk==='CONCRETE')&&Math.random()<0.025){
+            cc(nextGrid,nx,ny);
+            sc(nextGrid,nx,ny,EIDX.CO2,80,0);
+            if(Math.random()<0.25){ cc(nextGrid,x,y); consumed=true; break; }
+          }
+          // Metal dissolves vigorously
+          if(nk==='IRON'&&Math.random()<0.04){
+            cc(nextGrid,nx,ny); // iron dissolves
+            if(Math.random()<0.2){ cc(nextGrid,x,y); consumed=true; break; }
+          }
+          // Sand: acid etching (slow)
+          if(nk==='SAND'&&Math.random()<0.01){ cc(nextGrid,nx,ny); }
+          // Glass: acid dissolves glass (HF)
+          if(nk==='GLASS'&&Math.random()<0.015){ cc(nextGrid,nx,ny); }
+          // Coral dissolves readily (aragonite + acid)
+          if(nk==='CORAL'&&Math.random()<0.18){ cc(nextGrid,nx,ny); }
+          // Crystal dissolves
+          if(nk==='CRYSTAL'&&Math.random()<0.09){ cc(nextGrid,nx,ny); if(Math.random()<0.2){cc(nextGrid,x,y);consumed=true;break;} }
+          // Wood/plant dissolves
+          if((nk==='WOOD'||nk==='PLANT')&&Math.random()<0.02){ cc(nextGrid,nx,ny); }
+          // Rubber: resistant but slow
+          if(nk==='RUBBER'&&Math.random()<0.003){ cc(nextGrid,nx,ny); }
+          // Honey dissolves
+          if(nk==='HONEY'&&Math.random()<0.015){ cc(nextGrid,nx,ny); }
+          // Ice melts fast in acid
+          if(nk==='ICE'&&Math.random()<0.04){ sc(nextGrid,nx,ny,EIDX.WATER,20,0); }
+          // NUKE + acid = detonation
+          if(nk==='NUKE'&&Math.random()<0.008){ nukeExplode(nx,ny); }
+          // Generic organic stuff
+          if(!consumed&&Math.random()<0.015){ cc(nextGrid,nx,ny); if(Math.random()<0.3){cc(nextGrid,x,y);consumed=true;break;} }
         }
+        if(consumed) continue;
+        // Flow
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
+        }
+        continue;
       }
 
-      // ── PLANT ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // OIL — hydrophobic, floats on water, burns
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='OIL'){
+        // Oil + water: oil naturally floats (lower density handled by mv)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Fire ignites oil
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.FIRE,220,1); continue;
+          }
+          // Electric ignites oil
+          if(nk==='ELECTRIC'&&Math.random()<0.1){ sc(nextGrid,x,y,EIDX.FIRE,220,1); continue; }
+          // Acid dissolves oil slowly
+          if(nk==='ACID'&&Math.random()<0.006){ cc(nextGrid,x,y); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              if(!mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)){
+                if(!mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)){
+                  sc(nextGrid,x,y,type,temp,1);
+                }
+              }
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SALTWATER — dissolved NaCl solution
+      // Lower freeze point (~-21°C), conducts electricity
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SALTWATER'){
+        if(settings.heat&&temp<4&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.ICE,5,1); continue; } // lower freeze point
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='FIRE'&&Math.random()<0.06) sc(nextGrid,x,y,EIDX.STEAM,140,1);
+          if(nk==='LAVA'&&Math.random()<0.08){ sc(nextGrid,nx,ny,EIDX.STONE,20,0); sc(nextGrid,x,y,EIDX.STEAM,160,1); break; }
+          // Saltwater conducts electricity
+          if(nk==='ELECTRIC'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.ELECTRIC,180,1); break; }
+          if(nk==='IRON'&&Math.random()<0.001) sc(nextGrid,nx,ny,EIDX.STONE,20,0); // accelerated corrosion
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ALCOHOL — ethanol; very flammable, evaporates fast
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ALCOHOL'){
+        const nl=temp-1;
+        // Fast evaporation
+        if(nl<=0||Math.random()<0.004){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC')&&Math.random()<0.2){
+            explode(x,y,3,false); break;
+          }
+          if(nk==='ACID'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,nl,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // MERCURY — liquid metal; very dense, toxic vapor in heat
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='MERCURY'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Vaporizes in extreme heat (toxic, destroys nearby particles as proxy)
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+          // Mercury amalgamates gold/metals (no gold, skip)
+          // Electric: mercury arcing
+          if(nk==='ELECTRIC'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.ELECTRIC,160,1); break; }
+          // Freeze: mercury freezes at −39°C (treated as solid)
+          if(nk==='FREEZE'&&Math.random()<0.12){ sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
+        }
+        if(!mv(grid,nextGrid,x,y,x,y+1,type,temp)){
+          if(!mv(grid,nextGrid,x,y,x+dir,y,type,temp)){
+            if(!mv(grid,nextGrid,x,y,x-dir,y,type,temp)){
+              sc(nextGrid,x,y,type,temp,1);
+            }
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ICE — solid water, 0°C
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ICE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.08){
+            sc(nextGrid,x,y,EIDX.WATER,20,1); break;
+          }
+          if(nk==='ACID'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Warm water melts ice too
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]>25&&Math.random()<0.005){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Ice grows near other ice when cold
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]<8&&Math.random()<0.015){ sc(nextGrid,nx,ny,EIDX.ICE,5,0); }
+        }
+        // Ice powder falls but is dense
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SNOW — loose ice crystals
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SNOW'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          if(nk==='WATER'&&grid[gi(nx,ny)+1]>22&&Math.random()<0.008){ sc(nextGrid,x,y,EIDX.WATER,20,1); break; }
+          // Snow compresses to ice under weight (not simulated perfectly, but adjacent snow → ice)
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SAND — silicon dioxide powder
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SAND'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Sand melts in extreme heat → glass
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.006){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.004){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.GLASS,20,1); break; }
+          // Acid etches sand
+          if(nk==='ACID'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // STONE — dense mineral
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='STONE'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Extreme heat melts stone → lava
+          if(nk==='LAVA'&&Math.random()<0.003){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          if(nk==='FIRE'&&Math.random()<0.001){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Acid → CO2 (carbonate minerals)
+          if(nk==='ACID'&&Math.random()<0.025){ cc(nextGrid,x,y); sc(nextGrid,x,y,EIDX.CO2,80,0); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SALT — sodium chloride
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SALT'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Dissolves in water → saltwater
+          if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.015){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.SALTWATER,grid[gi(nx,ny)+1],0);
+            break;
+          }
+          // Ice + salt → melts ice (deicing!)
+          if(nk==='ICE'&&Math.random()<0.03){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.WATER,15,0); // slightly above freeze
+            break;
+          }
+          // Snow + salt → water
+          if(nk==='SNOW'&&Math.random()<0.04){
+            cc(nextGrid,x,y);
+            sc(nextGrid,nx,ny,EIDX.WATER,15,0); break;
+          }
+          // Fire → salt melts but stays (NaCl melts at 801°C)
+          if(nk==='LAVA'&&Math.random()<0.05){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // WOOD — cellulose; burns, chars, then ash
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='WOOD'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // COAL — carbon; burns hotter/longer than wood
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='COAL'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; } // hotter fire
+          if(nk==='ELECTRIC'&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.15){ sc(nextGrid,x,y,EIDX.FIRE,240,1); break; }
+          if(nk==='WATER'&&Math.random()<0.002){ cc(nextGrid,x,y); break; } // quenched
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ASH — combustion residue
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ASH'){
+        // Floats on water (very light)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='WATER'||nk==='ACID')&&Math.random()<0.008){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // GLASS — fused silica; inert, acid-resistant
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='GLASS'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Glass dissolves in HF acid (represented by acid)
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+          // Glass melts back to lava/sand in extreme heat
+          if(nk==='LAVA'&&Math.random()<0.01){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Explosion shatters glass → sand
+          // (handled in explode function)
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // SULFUR — burns with blue flame → SO₂
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='SULFUR'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){
+            sc(nextGrid,x,y,EIDX.FIRE,220,1);
+            // Sulfur fire produces SO2 (proxied as CO2)
+            if(y>0&&gtype(x,y-1)===0) sc(nextGrid,x,y-1,EIDX.CO2,60,0);
+            break;
+          }
+          if(nk==='ELECTRIC'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.FIRE,220,1); break; }
+          // Sulfur + water = weak sulfurous acid (proxied: acid created)
+          if(nk==='WATER'&&Math.random()<0.002){ sc(nextGrid,nx,ny,EIDX.ACID,20,0); cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // IRON — heavy metal; rusts in water, melts in lava
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='IRON'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Iron melts in lava (1538°C)
+          if(nk==='LAVA'&&Math.random()<0.02){ sc(nextGrid,x,y,EIDX.LAVA,240,1); break; }
+          // Rusts in water/saltwater
+          if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.0004){ sc(nextGrid,x,y,EIDX.STONE,20,1); break; }
+          // Acid dissolves rapidly
+          if(nk==='ACID'&&Math.random()<0.04){ cc(nextGrid,x,y); break; }
+          // Conductive: electric can pass through
+          if(nk==='ELECTRIC'&&Math.random()<0.1){ sc(nextGrid,x,y,EIDX.ELECTRIC,150,1); break; }
+          // Lightning heats iron
+          if(nk==='LIGHTNING'&&Math.random()<0.08){ sc(nextGrid,x,y,EIDX.FIRE,180,1); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CONCRETE — hardens with water; strong once set
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CONCRETE'){
+        const ckey=x+','+y;
+        if(concreteAge.has(ckey)){
+          const age=concreteAge.get(ckey)+1;
+          if(age>300){
+            // Fully hardened → becomes stone (inert)
+            sc(nextGrid,x,y,EIDX.STONE,20,1);
+            concreteAge.delete(ckey);
+            continue;
+          }
+          concreteAge.set(ckey,age);
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Water triggers hardening
+          if((nk==='WATER'||nk==='SALTWATER')&&!concreteAge.has(ckey)){
+            concreteAge.set(ckey,0);
+          }
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); concreteAge.delete(ckey); break; }
+        }
+        if(!concreteAge.has(ckey)&&settings.gravity){
+          // Unhardened concrete flows slowly
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // PLANT — cellulose organism; grows near water
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='PLANT'){
         if(settings.gravity){
-          if(mv(x,y,x,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
           const d=Math.random()<0.5?-1:1;
-          if(mv(x,y,x+d,y+1,type,temp)) continue;
-          if(mv(x,y,x-d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
         }
+        // Grow near water
         if(Math.random()<0.004){
           for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
             if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3){
@@ -477,83 +1168,407 @@ function tick(){
           }
         }
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01)
-            cc(nextGrid,nx,ny);
+          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS){
+            const nk=gkey(nx,ny); if(!nk) continue;
+            if((nk==='WATER'||nk==='SALTWATER')&&Math.random()<0.012) cc(nextGrid,nx,ny); // absorb water
+            if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); break; }
+            if(nk==='ACID'&&Math.random()<0.03){ cc(nextGrid,x,y); break; }
+            // Plant → ash after burning nearby fire burns it
+            if(nk==='FREEZE'&&Math.random()<0.04){ sc(nextGrid,x,y,EIDX.ICE,5,1); break; }
+          }
         }
         sc(nextGrid,x,y,type,temp,1);
         continue;
       }
 
-      // ── SALT ──
-      if(key==='SALT'){
-        let dissolved=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.01){
-            cc(nextGrid,x,y); cc(nextGrid,nx,ny); dissolved=true; break;
-          }
-        }
-        if(dissolved) continue;
-      }
-
-      // ── ICE ──
-      if(key==='ICE'){
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // GUNPOWDER — KNO₃ + carbon + sulfur
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='GUNPOWDER'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.05){
-            sc(nextGrid,x,y,EIDX.WATER,20,1); break;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.35){
+            explode(x,y,4,true); break;
           }
+          // Water wets gunpowder → won't explode
+          if(nk==='WATER'&&Math.random()<0.3){ cc(nextGrid,x,y); break; } // gunpowder dissolves/ruins
         }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
       }
 
-      // ── TNT ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // METHANE — CH₄; lighter than air, explosive
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='METHANE'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // Methane + fire = explosion + CO2
+          if((nk==='FIRE'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.3){
+            explode(x,y,5,false);
+            sc(nextGrid,x,y,EIDX.CO2,80,0);
+            break;
+          }
+          // Methane + lava = ignites
+          if(nk==='LAVA'&&Math.random()<0.2){ sc(nextGrid,x,y,EIDX.FIRE,220,1); break; }
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        // Rise (lighter than air)
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        // drift sideways
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.4){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CO₂ — carbon dioxide; extinguishes fire, sinks
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CO2'){
+        const nl=temp-1;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          // CO2 puts out fire!
+          if(nk==='FIRE'&&Math.random()<0.25){ cc(nextGrid,nx,ny); }
+          // CO2 + water → carbonic acid (weak, no change for simplicity)
+          // Plants absorb CO2 (photosynthesis)
+          if(nk==='PLANT'&&Math.random()<0.01){ cc(nextGrid,x,y); break; }
+        }
+        sc(nextGrid,x,y,type,nl,1);
+        // CO2 is heavier than air — sinks or stays
+        if(y<ROWS-1&&gtype(x,y+1)===0&&Math.random()<0.3){ sc(nextGrid,x,y+1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TNT — trinitrotoluene explosive
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='TNT'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.05)
-            bigExplode(x,y);
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='ELECTRIC'||nk==='LIGHTNING')&&Math.random()<0.06) bigExplode(x,y);
+          if(nk==='GUNPOWDER'&&Math.random()<0.08) bigExplode(x,y);
         }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
       }
 
-      // ── VIRUS ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CRYSTAL — piezoelectric mineral; grows, conducts electricity
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CRYSTAL'){
+        // Slow crystal growth
+        if(Math.random()<0.003){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y+1],[x-1,y+1],[x+1,y-1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); break; }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.025){ cc(nextGrid,x,y); break; }
+          // Crystal + water → slow dissolution
+          if(nk==='WATER'&&Math.random()<0.005) sc(nextGrid,nx,ny,EIDX.ICE,5,0); // crystallization of water
+          // Piezoelectric effect: electric → lightning
+          if(nk==='ELECTRIC'&&Math.random()<0.06) sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
+          // Acid dissolves
+          if(nk==='ACID'&&Math.random()<0.09){ cc(nextGrid,x,y); break; }
+          // Freeze promotes growth
+          if(nk==='FREEZE'&&Math.random()<0.025) sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0);
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // MAGMAROCK / BASALT — slow lava release
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='MAGMAROCK'){
+        if(Math.random()<0.006){
+          for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){
+            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.4){
+              sc(nextGrid,nx,ny,EIDX.LAVA,220,0); break;
+            }
+          }
+        }
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='WATER'&&Math.random()<0.05){ cc(nextGrid,nx,ny); } // water touching basalt warms
+          if(nk==='ICE'&&Math.random()<0.08) sc(nextGrid,nx,ny,EIDX.WATER,20,0);
+          if(nk==='ACID'&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
+        }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // HONEY — viscous sugar solution
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='HONEY'){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.FIRE,200,1); continue; }
+          // Water dilutes honey
+          if(nk==='WATER'&&Math.random()<0.003){ cc(nextGrid,nx,ny); }
+          // Freeze crystallizes honey
+          if(nk==='FREEZE'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.CRYSTAL,30,1); break; }
+          // Acid dissolves
+          if(nk==='ACID'&&Math.random()<0.012){ cc(nextGrid,x,y); break; }
+          // Honey + heat → caramelizes (becomes coal-like dark material)
+          if(nk==='FIRE'&&Math.random()<0.002){ sc(nextGrid,x,y,EIDX.COAL,20,1); break; }
+        }
+        // Very slow flow (viscous)
+        if(settings.gravity&&Math.random()<0.09){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          if(Math.random()<0.3){
+            if(mv(grid,nextGrid,x,y,x+dir,y,type,temp)) continue;
+            if(mv(grid,nextGrid,x,y,x-dir,y,type,temp)) continue;
+          }
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // RUBBER — elastomer; bounces, insulates
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='RUBBER'){
+        const vkey=x+','+y;
+        let vel=rubberVel.get(vkey)||{vx:0,vy:0};
+        rubberVel.delete(vkey);
+        let destroyed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.05){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='ACID'&&Math.random()<0.015){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='VOID'&&Math.random()<0.3){ cc(nextGrid,x,y); destroyed=true; break; }
+          if(nk==='LIGHTNING'&&Math.random()<0.08){ cc(nextGrid,x,y); destroyed=true; break; }
+          // Rubber insulates electricity — absorbs sparks
+          if(nk==='ELECTRIC'&&Math.random()<0.6){ cc(nextGrid,nx,ny); } // rubber kills the spark
+        }
+        if(destroyed) continue;
+        if(settings.gravity) vel.vy+=1;
+        vel.vx=Math.max(-4,Math.min(4,vel.vx));
+        vel.vy=Math.max(-6,Math.min(6,vel.vy));
+        const txf=x+Math.sign(vel.vx);
+        const tyf=y+Math.sign(vel.vy);
+        const canX=txf>=0&&txf<COLS&&gtype(txf,y)===0;
+        const canY=tyf>=0&&tyf<ROWS&&gtype(x,tyf)===0;
+        let nx2=x,ny2=y;
+        if(canX&&canY){ nx2=txf; ny2=tyf; }
+        else if(canY){ vel.vx=-vel.vx*0.75; nx2=x; ny2=tyf; }
+        else if(canX){ vel.vy=-vel.vy*0.88; vel.vx*=0.9; nx2=txf; ny2=y; }
+        else{ vel.vx=-vel.vx*0.65; vel.vy=-vel.vy*0.78; }
+        vel.vx*=0.97; vel.vy*=0.98;
+        if(Math.abs(vel.vx)<0.1) vel.vx=0;
+        if(Math.abs(vel.vy)<0.05) vel.vy=0;
+        if(nx2!==x||ny2!==y){
+          sc(nextGrid,nx2,ny2,type,temp,1); cc(nextGrid,x,y);
+          rubberVel.set(nx2+','+ny2,vel);
+        } else {
+          sc(nextGrid,x,y,type,temp,1);
+          rubberVel.set(x+','+y,vel);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // CORAL — calcium carbonate organism
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='CORAL'){
+        let hasWater=false, killed=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='WATER'||nk==='SALTWATER') hasWater=true;
+          if(nk==='ACID'&&Math.random()<0.15){ cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='FIRE'&&Math.random()<0.09){ cc(nextGrid,x,y); killed=true; break; }
+          if(nk==='LAVA'&&Math.random()<0.06){ sc(nextGrid,x,y,EIDX.STONE,20,1); killed=true; break; }
+          if(nk==='FREEZE'&&Math.random()<0.09){ sc(nextGrid,x,y,EIDX.ICE,5,1); killed=true; break; }
+        }
+        if(killed) continue;
+        // Grows in saltwater (preferred) or regular water
+        const growRate=hasWater?0.005:0.0001;
+        if(hasWater&&Math.random()<growRate){
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
+          }
+        }
+        // Dies without water
+        if(!hasWater&&Math.random()<0.0003){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // VIRUS — self-replicating agent
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='VIRUS'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
           const nt=gtype(nx,ny); if(!nt) continue;
           const nk=EKEYS[nt-1];
-          if(nk!=='VIRUS'&&nk!=='ANTIMATTER'&&nk!=='ELECTRIC'&&nk!=='VOID'&&nk!=='LIGHTNING'&&nk!=='NUKE'&&Math.random()<0.015)
-            sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
+          const immune=new Set(['VIRUS','ANTIMATTER','ELECTRIC','VOID','LIGHTNING','NUKE','FIRE','LAVA','ACID','FREEZE','CO2']);
+          if(!immune.has(nk)&&Math.random()<0.012) sc(nextGrid,nx,ny,EIDX.VIRUS,20,0);
+          // Cured by fire, UV (electric proxy), acid, freeze
+          if(nk==='FIRE'&&Math.random()<0.3){ cc(nextGrid,x,y); break; }
+          if(nk==='ACID'&&Math.random()<0.2){ cc(nextGrid,x,y); break; }
+          if(nk==='FREEZE'&&Math.random()<0.15){ cc(nextGrid,x,y); break; }
+          if(nk==='ELECTRIC'&&Math.random()<0.35){ cc(nextGrid,x,y); break; }
+          if(nk==='UV'&&Math.random()<0.4){ cc(nextGrid,x,y); break; }
         }
+        // Floats/settles
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
       }
 
-      // ── ANTIMATTER ──
-      if(key==='ANTIMATTER'){
-        let dead=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ELECTRIC / SPARK — electrical discharge
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ELECTRIC'){
+        const nl=temp-4;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+
+        const conductors=['WATER','SALTWATER','IRON','STONE','COAL','MERCURY'];
+        const insulators=['RUBBER','GLASS','OIL','WOOD'];
+
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
           const nt=gtype(nx,ny); if(!nt) continue;
           const nk=EKEYS[nt-1];
-          if(nk!=='ANTIMATTER'){
-            cc(nextGrid,nx,ny);
-            if(Math.random()<0.15){ cc(nextGrid,x,y); dead=true; break; }
+
+          // Conductors spread electricity
+          if(conductors.includes(nk)&&Math.random()<0.09){
+            sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);
+            if(nk==='WATER'&&Math.random()<0.12)     sc(nextGrid,nx,ny,EIDX.STEAM,120,0);
+            if(nk==='SALTWATER'&&Math.random()<0.18) sc(nextGrid,nx,ny,EIDX.STEAM,130,0);
+            if(nk==='IRON'&&Math.random()<0.02)      sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
+            if(nk==='MERCURY'&&Math.random()<0.06)   cc(nextGrid,nx,ny); // vaporize
           }
+          // Insulators block electricity (rubber especially)
+          if(insulators.includes(nk)){
+            if(nk==='RUBBER') continue; // rubber fully blocks
+            if(Math.random()<0.02) sc(nextGrid,nx,ny,EIDX.FIRE,180,0); // can catch fire
+          }
+          // Flammables ignite
+          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1)     sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+          if(nk==='TNT'&&Math.random()<0.2)                    bigExplode(nx,ny);
+          if(nk==='GUNPOWDER'&&Math.random()<0.4)             explode(nx,ny,4,false);
+          if(nk==='VIRUS'&&Math.random()<0.3)                  cc(nextGrid,nx,ny);
+          if(nk==='CRYSTAL'&&Math.random()<0.04)               sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
+          if(nk==='NUKE'&&Math.random()<0.1)                   nukeExplode(nx,ny);
+          if(nk==='METHANE'&&Math.random()<0.3)                explode(nx,ny,6,false);
+          if(nk==='ALCOHOL'&&Math.random()<0.2)                sc(nextGrid,nx,ny,EIDX.FIRE,210,0);
+          if(nk==='SAND'&&Math.random()<0.04)                  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
+          if(nk==='ICE'&&Math.random()<0.15)                   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
         }
-        if(dead) continue;
-        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){ sc(nextGrid,x,y-1,type,temp,1); cc(nextGrid,x,y); }
-        else{
-          const d=Math.random()<0.5?-1:1;
-          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y-1,type,temp,1); cc(nextGrid,x,y); }
-          else sc(nextGrid,x,y,type,temp,1);
+
+        // Spread electric arc to empty space
+        if(Math.random()<0.3){
+          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
+          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)
+            sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);
         }
         continue;
       }
 
-      // ── TORNADO ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // LIGHTNING — high-voltage arc discharge
+      // Travels down (like real lightning), melts sand, ignites
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='LIGHTNING'){
+        const nl=temp-10;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+        // Lightning prefers to travel DOWN and sideways
+        const preferred=[[x,y+1],[x+1,y],[x-1,y],[x+1,y+1],[x-1,y+1],[x,y-1]];
+        for(const[nx,ny]of preferred){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny);
+          if(nt===0||Math.random()<0.75){
+            const nk=nt>0?EKEYS[nt-1]:null;
+            if(nk==='RUBBER'||nk==='GLASS') break; // insulators stop lightning
+            if(nk){
+              if(ELEMENTS[nk]?.flammable)          sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+              else if(nk==='WATER')                  sc(nextGrid,nx,ny,EIDX.STEAM,160,0);
+              else if(nk==='SALTWATER')              sc(nextGrid,nx,ny,EIDX.STEAM,170,0);
+              else if(nk==='ICE')                    sc(nextGrid,nx,ny,EIDX.WATER,50,0);
+              else if(nk==='SNOW')                   sc(nextGrid,nx,ny,EIDX.WATER,30,0);
+              else if(nk==='TNT')                    bigExplode(nx,ny);
+              else if(nk==='GUNPOWDER')              explode(nx,ny,4,false);
+              else if(nk==='SAND')                   sc(nextGrid,nx,ny,EIDX.GLASS,20,0); // fulgurite!
+              else if(nk==='CRYSTAL')                sc(nextGrid,nx,ny,EIDX.ELECTRIC,200,0);
+              else if(nk==='VIRUS')                  cc(nextGrid,nx,ny);
+              else if(nk==='NUKE')                   nukeExplode(nx,ny);
+              else if(nk==='IRON')                   sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+              else if(nk==='METHANE')                explode(nx,ny,6,false);
+              else                                   cc(nextGrid,nx,ny);
+            }
+            if(nt===0){ sc(nextGrid,nx,ny,EIDX.LIGHTNING,nl,1); }
+            cc(nextGrid,x,y); break;
+          }
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TORNADO — low-pressure vortex
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='TORNADO'){
         const nl=temp-1;
         if(nl<=0){ cc(nextGrid,x,y); continue; }
         sc(nextGrid,x,y,type,nl,1);
+
+        // Swirl nearby particles
         for(let dy2=-8;dy2<=8;dy2++) for(let dx2=-8;dx2<=8;dx2++){
           const nx=x+dx2, ny=y+dy2;
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
@@ -569,124 +1584,121 @@ function tick(){
             }
           }
         }
+        // Tornado wanders
         if(Math.random()<0.1){
           const d=Math.random()<0.5?-1:1;
           if(x+d>=0&&x+d<COLS&&gtype(x+d,y)===0){ sc(nextGrid,x+d,y,type,nl,1); cc(nextGrid,x,y); }
         }
+        // Water near tornado → waterspout (makes steam/mist)
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          if(gkey(nx,ny)==='WATER'&&Math.random()<0.05) sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
+        }
         continue;
       }
 
-      // ── BUBBLE ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // FREEZE — cryogenic spray (liquid N₂ proxy)
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='FREEZE'){
+        const nl=temp-2;
+        if(nl<=0){ cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
+
+        let froze=false;
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
+          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+          const nt=gtype(nx,ny); if(!nt) continue;
+          const nk=EKEYS[nt-1];
+          if(nk==='FREEZE') continue;
+
+          let acted=false;
+          if(nk==='WATER'&&Math.random()<0.25)        { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='SALTWATER'&&Math.random()<0.15){ sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; } // lower freeze point
+          else if(nk==='STEAM'&&Math.random()<0.18)    { sc(nextGrid,nx,ny,EIDX.WATER,20,0); acted=true; }
+          else if(nk==='FIRE'&&Math.random()<0.45)     { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='LAVA'&&Math.random()<0.12)     { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; }
+          else if(nk==='OIL'&&Math.random()<0.12)      { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; } // frozen oil→solid
+          else if(nk==='ACID'&&Math.random()<0.08)     { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='HONEY'&&Math.random()<0.08)    { sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); acted=true; } // crystallized honey
+          else if(nk==='BUBBLE'&&Math.random()<0.15)   { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='PLANT'&&Math.random()<0.06)    { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='CORAL'&&Math.random()<0.1)     { sc(nextGrid,nx,ny,EIDX.ICE,5,0); acted=true; }
+          else if(nk==='VIRUS'&&Math.random()<0.1)     { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='ELECTRIC'&&Math.random()<0.12) { cc(nextGrid,nx,ny); acted=true; }
+          else if(nk==='MERCURY'&&Math.random()<0.15)  { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; }
+          else if(nk==='ALCOHOL'&&Math.random()<0.08)  { cc(nextGrid,nx,ny); acted=true; } // alcohol evaporates before freezing
+          else if(nk==='METHANE'&&Math.random()<0.1)   { cc(nextGrid,nx,ny); acted=true; } // methane liquefies (disappear proxy)
+          else if(nk==='SAND'&&Math.random()<0.02)     { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; } // permafrost
+
+          if(acted&&Math.random()<0.4){ cc(nextGrid,x,y); froze=true; break; }
+        }
+
+        if(!froze){
+          // Drift randomly
+          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
+          for(let i=3;i>0;i--){ const j=0|Math.random()*(i+1); [dirs[i],dirs[j]]=[dirs[j],dirs[i]]; }
+          let moved=false;
+          for(const[nx,ny]of dirs){
+            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+            if(gtype(nx,ny)===0&&Math.random()<0.55){ sc(nextGrid,nx,ny,type,nl,1); cc(nextGrid,x,y); moved=true; break; }
+          }
+          if(!moved) sc(nextGrid,x,y,type,nl,1);
+        }
+        continue;
+      }
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // BUBBLE — air pocket in liquid
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='BUBBLE'){
         const nl=temp-1;
         if(nl<=0){ cc(nextGrid,x,y); continue; }
-        const above=y>0?gtype(x,y-1):1;
+        const above=y>0?gtype(x,y-1):-1;
         if(above===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
-        else if(y>0&&above>0&&EKEYS[above-1]==='WATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.WATER,20,1); }
+        else if(above>0&&EKEYS[above-1]==='WATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.WATER,20,1); }
+        else if(above>0&&EKEYS[above-1]==='SALTWATER'){ sc(nextGrid,x,y-1,type,nl,1); sc(nextGrid,x,y,EIDX.SALTWATER,20,1); }
         else{
           const d=Math.random()<0.5?-1:1;
           if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
           else sc(nextGrid,x,y,type,nl,1);
         }
-        continue;
-      }
-
-      // ── ELECTRIC ──
-      if(key==='ELECTRIC'){
-        const nl=temp-3;
-        if(nl<=0){ cc(nextGrid,x,y); continue; }
-        sc(nextGrid,x,y,type,nl,1);
-        const cond=['WATER','STONE','GLASS','ICE','SALT'];
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]]){
+        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=gtype(nx,ny); if(!nt) continue;
-          const nk=EKEYS[nt-1];
-          if(cond.includes(nk)&&Math.random()<0.08){
-            sc(nextGrid,nx,ny,EIDX.ELECTRIC,nl-10,0);
-            if(nk==='WATER'&&Math.random()<0.1)  sc(nextGrid,nx,ny,EIDX.STEAM,100,0);
-            if(nk==='ICE'&&Math.random()<0.15)   sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-            if(nk==='SAND'&&Math.random()<0.05)  sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
-          }
-          if(ELEMENTS[nk]?.flammable&&Math.random()<0.1) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-          if(nk==='TNT'&&Math.random()<0.2)       bigExplode(nx,ny);
-          if(nk==='GUNPOWDER'&&Math.random()<0.4) explode(nx,ny,4,false);
-          if(nk==='VIRUS'&&Math.random()<0.3)     cc(nextGrid,nx,ny);
-          if(nk==='CRYSTAL'&&Math.random()<0.04)  sc(nextGrid,nx,ny,EIDX.LIGHTNING,220,0);
-          if(nk==='NUKE'&&Math.random()<0.1)      nukeExplode(nx,ny);
-          if(nk==='RUBBER'&&Math.random()<0.08)   cc(nextGrid,nx,ny);
-        }
-        if(Math.random()<0.3){
-          const ad=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]][0|Math.random()*4];
-          if(ad[0]>=0&&ad[0]<COLS&&ad[1]>=0&&ad[1]<ROWS&&gtype(ad[0],ad[1])===0)
-            sc(nextGrid,ad[0],ad[1],EIDX.ELECTRIC,nl-20,1);
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if(nk==='FIRE'&&Math.random()<0.3){ cc(nextGrid,x,y); break; }
+          if(nk==='ACID'&&Math.random()<0.1){ cc(nextGrid,x,y); break; }
         }
         continue;
       }
 
-      // ── MAGMAROCK ──
-      if(key==='MAGMAROCK'){
-        if(Math.random()<0.008){
-          for(const[nx,ny]of[[x,y-1],[x-1,y],[x+1,y]]){
-            if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.5){
-              sc(nextGrid,nx,ny,EIDX.LAVA,200,0); break;
-            }
-          }
-        }
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // ANTIMATTER — annihilates matter
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      if(key==='ANTIMATTER'){
+        let dead=false;
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
           const nt=gtype(nx,ny); if(!nt) continue;
           const nk=EKEYS[nt-1];
-          if(nk==='ICE'&&Math.random()<0.08)  sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-          if(nk==='WOOD'&&Math.random()<0.02) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-        }
-      }
-
-      // ── CRYSTAL ──
-      if(key==='CRYSTAL'){
-        if(Math.random()<0.003){
-          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y+1],[x-1,y+1],[x+1,y-1]];
-          for(const[nx,ny]of dirs){
-            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-            if(gtype(nx,ny)===0&&Math.random()<0.4){ sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0); break; }
+          if(nk!=='ANTIMATTER'){
+            cc(nextGrid,nx,ny);
+            // Annihilation creates gamma flash (fire proxy)
+            if(Math.random()<0.3) sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+            if(Math.random()<0.15){ cc(nextGrid,x,y); dead=true; break; }
           }
         }
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA')&&Math.random()<0.02){ cc(nextGrid,x,y); break; }
-          if(nk==='WATER'&&Math.random()<0.005) sc(nextGrid,nx,ny,EIDX.ICE,20,0);
-          if(nk==='FREEZE'&&Math.random()<0.02) sc(nextGrid,nx,ny,EIDX.CRYSTAL,30,0);
-        }
-      }
-
-      // ── HONEY ──
-      if(key==='HONEY'){
-        if(Math.random()<0.08&&settings.gravity){
-          if(mv(x,y,x,y+1,type,temp)) continue;
-          if(Math.random()<0.3){
-            if(mv(x,y,x+dir,y,type,temp)) continue;
-            if(mv(x,y,x-dir,y,type,temp)) continue;
-          }
-        }
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          if(EKEYS[gtype(nx,ny)-1]==='WATER'&&Math.random()<0.005) cc(nextGrid,nx,ny);
-        }
-        let onFire=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          if(EKEYS[gtype(nx,ny)-1]==='FIRE') onFire=true;
-        }
-        if(onFire&&Math.random()<0.005){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          if(EKEYS[gtype(nx,ny)-1]==='FREEZE'&&Math.random()<0.05){ sc(nextGrid,x,y,EIDX.ICE,20,1); break; }
-        }
+        if(dead) continue;
+        if(y>0&&gtype(x,y-1)===0&&Math.random()<0.2){ sc(nextGrid,x,y-1,type,temp,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0&&Math.random()<0.3){ sc(nextGrid,x+d,y-1,type,temp,1); cc(nextGrid,x,y); continue; }
         sc(nextGrid,x,y,type,temp,1);
         continue;
       }
 
-      // ── VOID ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // VOID — absolute vacuum; destroys everything
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='VOID'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
@@ -705,222 +1717,59 @@ function tick(){
         continue;
       }
 
-      // ── LIGHTNING ──
-      if(key==='LIGHTNING'){
-        const nl=temp-8;
-        if(nl<=0){ cc(nextGrid,x,y); continue; }
-        sc(nextGrid,x,y,type,nl,1);
-        const preferred=[[x,y+1],[x+1,y],[x-1,y],[x+1,y+1],[x-1,y+1],[x,y-1]];
-        for(const[nx,ny]of preferred){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=gtype(nx,ny);
-          if(nt===0||Math.random()<0.7){
-            const nk=nt>0?EKEYS[nt-1]:null;
-            if(nk==='STONE'||nk==='GLASS') break;
-            if(nk){
-              if(ELEMENTS[nk]?.flammable)            sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
-              else if(nk==='WATER')                   sc(nextGrid,nx,ny,EIDX.STEAM,150,0);
-              else if(nk==='ICE')                     sc(nextGrid,nx,ny,EIDX.WATER,20,0);
-              else if(nk==='TNT')                     bigExplode(nx,ny);
-              else if(nk==='GUNPOWDER')               explode(nx,ny,4,false);
-              else if(nk==='SAND'&&Math.random()<0.2) sc(nextGrid,nx,ny,EIDX.GLASS,20,0);
-              else if(nk==='CRYSTAL')                 sc(nextGrid,nx,ny,EIDX.ELECTRIC,180,0);
-              else if(nk==='VIRUS')                   cc(nextGrid,nx,ny);
-              else if(nk==='NUKE')                    nukeExplode(nx,ny);
-              else                                    cc(nextGrid,nx,ny);
-            }
-            if(nt===0){ sc(nextGrid,nx,ny,EIDX.LIGHTNING,nl,1); }
-            cc(nextGrid,x,y);
-            break;
-          }
-        }
-        // no smoke trail — lightning just fades
-        continue;
-      }
-
-      // ── CORAL ──
-      if(key==='CORAL'){
-        let hasWater=false, killed=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if(nk==='WATER') hasWater=true;
-          if(nk==='ACID'&&Math.random()<0.15)  { cc(nextGrid,x,y); killed=true; break; }
-          if(nk==='FIRE'&&Math.random()<0.08)  { cc(nextGrid,x,y); killed=true; break; }
-          if(nk==='LAVA'&&Math.random()<0.05)  { sc(nextGrid,x,y,EIDX.STONE,20,1); killed=true; break; }
-          if(nk==='VOID'&&Math.random()<0.2)   { cc(nextGrid,x,y); killed=true; break; }
-          if(nk==='FREEZE'&&Math.random()<0.08){ sc(nextGrid,x,y,EIDX.ICE,20,1); killed=true; break; }
-        }
-        if(killed) continue;
-        if(hasWater&&Math.random()<0.004){
-          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
-          for(const[nx,ny]of dirs){
-            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-            const nt=gtype(nx,ny);
-            if(nt===0&&Math.random()<0.5)                      { sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
-            if(nt>0&&EKEYS[nt-1]==='WATER'&&Math.random()<0.3) { sc(nextGrid,nx,ny,EIDX.CORAL,20,0); break; }
-          }
-        }
-        if(!hasWater&&Math.random()<0.0005){ sc(nextGrid,x,y,EIDX.STONE,20,1); continue; }
-        sc(nextGrid,x,y,type,temp,1);
-        continue;
-      }
-
-      // ══════════════════════════════════════════
-      // FREEZE — cryo cloud: spreads sideways in all
-      // directions, freezes on contact, then vanishes.
-      // Does NOT just float up — drifts randomly all sides.
-      // ══════════════════════════════════════════
-      if(key==='FREEZE'){
-        const nl=temp-2;
-        if(nl<=0){ cc(nextGrid,x,y); continue; }
-        sc(nextGrid,x,y,type,nl,1);
-
-        // Try to freeze every adjacent particle
-        let froze=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nt=gtype(nx,ny); if(!nt) continue;
-          const nk=EKEYS[nt-1];
-          if(nk==='FREEZE') continue;
-
-          let acted=false;
-          if(nk==='WATER'&&Math.random()<0.2)       { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='STEAM'&&Math.random()<0.15)  { sc(nextGrid,nx,ny,EIDX.WATER,20,0); acted=true; }
-          else if(nk==='FIRE'&&Math.random()<0.4)    { cc(nextGrid,nx,ny);                 acted=true; }
-          else if(nk==='LAVA'&&Math.random()<0.1)    { sc(nextGrid,nx,ny,EIDX.STONE,20,0); acted=true; }
-          else if(nk==='OIL'&&Math.random()<0.12)    { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='ACID'&&Math.random()<0.1)    { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='HONEY'&&Math.random()<0.07)  { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='BUBBLE'&&Math.random()<0.12) { cc(nextGrid,nx,ny);                 acted=true; }
-          else if(nk==='PLANT'&&Math.random()<0.05)  { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='CORAL'&&Math.random()<0.1)   { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-          else if(nk==='VIRUS'&&Math.random()<0.08)  { cc(nextGrid,nx,ny);                 acted=true; }
-          else if(nk==='ELECTRIC'&&Math.random()<0.1){ cc(nextGrid,nx,ny);                 acted=true; }
-          else if(nk==='SAND'&&Math.random()<0.03)   { sc(nextGrid,nx,ny,EIDX.ICE,20,0);   acted=true; }
-
-          if(acted){
-            // Each freeze action has a chance to consume this particle
-            if(Math.random()<0.4){ cc(nextGrid,x,y); froze=true; break; }
-          }
-        }
-
-        if(!froze){
-          // Drift randomly in ALL 4 directions equally — not just up
-          // Shuffle the 4 directions and try each one
-          const dirs=[[x-1,y],[x+1,y],[x,y-1],[x,y+1]];
-          // Fisher-Yates shuffle on dirs
-          for(let i=3;i>0;i--){
-            const j=0|Math.random()*(i+1);
-            [dirs[i],dirs[j]]=[dirs[j],dirs[i]];
-          }
-          let moved=false;
-          for(const[nx,ny]of dirs){
-            if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-            if(gtype(nx,ny)===0&&Math.random()<0.55){
-              sc(nextGrid,nx,ny,type,nl,1);
-              cc(nextGrid,x,y);
-              moved=true;
-              break;
-            }
-          }
-          if(!moved) sc(nextGrid,x,y,type,nl,1);
-        }
-        continue;
-      }
-
-      // ── RUBBER ──
-      if(key==='RUBBER'){
-        const vkey=x+','+y;
-        let vel=rubberVel.get(vkey)||{vx:0,vy:0};
-        rubberVel.delete(vkey);
-        let destroyed=false;
-        for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
-          if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if(nk==='FIRE'&&Math.random()<0.04)     { cc(nextGrid,x,y); destroyed=true; break; }
-          if(nk==='LAVA'&&Math.random()<0.06)     { cc(nextGrid,x,y); destroyed=true; break; }
-          if(nk==='ACID'&&Math.random()<0.02)     { cc(nextGrid,x,y); destroyed=true; break; }
-          if(nk==='VOID'&&Math.random()<0.3)      { cc(nextGrid,x,y); destroyed=true; break; }
-          if(nk==='LIGHTNING'&&Math.random()<0.08){ cc(nextGrid,x,y); destroyed=true; break; }
-        }
-        if(destroyed) continue;
-        if(settings.gravity) vel.vy += 1;
-        vel.vx=Math.max(-3,Math.min(3,vel.vx));
-        vel.vy=Math.max(-5,Math.min(5,vel.vy));
-        const txf=x+Math.sign(vel.vx);
-        const tyf=y+Math.sign(vel.vy);
-        const canMoveX=txf>=0&&txf<COLS&&gtype(txf,y)===0;
-        const canMoveY=tyf>=0&&tyf<ROWS&&gtype(x,tyf)===0;
-        let nx2=x, ny2=y;
-        if(canMoveX&&canMoveY){ nx2=txf; ny2=tyf; }
-        else if(canMoveY){ vel.vx=-vel.vx*0.7; nx2=x; ny2=tyf; }
-        else if(canMoveX){ vel.vy=-vel.vy*0.85; vel.vx=vel.vx*0.9; nx2=txf; ny2=y; }
-        else { vel.vx=-vel.vx*0.6; vel.vy=-vel.vy*0.75; nx2=x; ny2=y; }
-        vel.vx*=0.97; vel.vy*=0.98;
-        if(Math.abs(vel.vx)<0.1) vel.vx=0;
-        if(Math.abs(vel.vy)<0.05) vel.vy=0;
-        if(nx2!==x||ny2!==y){
-          sc(nextGrid,nx2,ny2,type,temp,1); cc(nextGrid,x,y);
-          rubberVel.set(nx2+','+ny2,vel);
-        } else {
-          sc(nextGrid,x,y,type,temp,1);
-          rubberVel.set(x+','+y,vel);
-        }
-        continue;
-      }
-
-      // ── NUKE ──
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // NUKE — nuclear device
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       if(key==='NUKE'){
         for(const[nx,ny]of[[x-1,y],[x+1,y],[x,y-1],[x,y+1]]){
           if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
-          const nk=EKEYS[gtype(nx,ny)-1];
-          if((nk==='FIRE'||nk==='LAVA'||nk==='LIGHTNING'||nk==='ELECTRIC')&&Math.random()<0.04){
-            nukeExplode(x,y); break;
-          }
-          if(nk==='TNT'&&Math.random()<0.1){ nukeExplode(x,y); break; }
+          const nk=gkey(nx,ny); if(!nk) continue;
+          if((nk==='FIRE'||nk==='LAVA'||nk==='LIGHTNING'||nk==='ELECTRIC')&&Math.random()<0.05) nukeExplode(x,y);
+          if(nk==='TNT'&&Math.random()<0.1) nukeExplode(x,y);
+          if(nk==='ACID'&&Math.random()<0.008) nukeExplode(x,y);
         }
+        if(settings.gravity){
+          if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+          const d=Math.random()<0.5?-1:1;
+          if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+          if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
+        }
+        sc(nextGrid,x,y,type,temp,1);
+        continue;
       }
 
-      // ── POWDER physics ──
+      // ── Generic powder/liquid/gas fallback ──
       if(elem.type==='powder'){
         if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
-        if(mv(x,y,x,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
         const d=Math.random()<0.5?-1:1;
-        if(mv(x,y,x+d,y+1,type,temp)) continue;
-        if(mv(x,y,x-d,y+1,type,temp)) continue;
-        if(gtype(x,y+1)>0&&EKEYS[gtype(x,y+1)-1]==='HONEY'){ sc(nextGrid,x,y,type,temp,1); continue; }
+        if(mv(grid,nextGrid,x,y,x+d,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-d,y+1,type,temp)) continue;
         sc(nextGrid,x,y,type,temp,1);
         continue;
       }
-
-      // ── LIQUID physics ──
       if(elem.type==='liquid'){
         if(!settings.gravity){ sc(nextGrid,x,y,type,temp,1); continue; }
-        if(mv(x,y,x,y+1,type,temp)) continue;
-        if(mv(x,y,x+dir,y,type,temp)) continue;
-        if(mv(x,y,x-dir,y,type,temp)) continue;
-        if(mv(x,y,x+dir,y+1,type,temp)) continue;
-        if(mv(x,y,x-dir,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x+dir,y,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-dir,y,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x+dir,y+1,type,temp)) continue;
+        if(mv(grid,nextGrid,x,y,x-dir,y+1,type,temp)) continue;
         sc(nextGrid,x,y,type,temp,1);
         continue;
       }
-
-      // ── GAS physics (STEAM, ANTIMATTER, ELECTRIC, BUBBLE, VOID, LIGHTNING fallthrough) ──
       if(elem.type==='gas'){
         const nl=temp>0?temp-1:0;
-        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); }
-        else{
-          const d=Math.random()<0.5?-1:1;
-          if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); }
-          else sc(nextGrid,x,y,type,nl,1);
-        }
+        if(y>0&&gtype(x,y-1)===0){ sc(nextGrid,x,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        const d=Math.random()<0.5?-1:1;
+        if(y>0&&x+d>=0&&x+d<COLS&&gtype(x+d,y-1)===0){ sc(nextGrid,x+d,y-1,type,nl,1); cc(nextGrid,x,y); continue; }
+        sc(nextGrid,x,y,type,nl,1);
         continue;
       }
     }
   }
 
-  // Wind effect
+  // Wind
   if(settings.wind){
     for(let y=0;y<ROWS;y++){
       if(Math.random()<0.01){
@@ -936,28 +1785,14 @@ function tick(){
 
   grid.set(nextGrid);
   for(let i=2;i<grid.length;i+=3) grid[i]=0;
+
+  // Wood burning: FIRE particle that's done → ASH
+  // (handled by fire turning to smoke → ash is implicit)
 }
 
 // ══════════════════════════════════════════════
-// MOVEMENT & EXPLOSIONS
+// EXPLOSIONS
 // ══════════════════════════════════════════════
-function mv(fx,fy,tx,ty,type,temp){
-  if(tx<0||tx>=COLS||ty<0||ty>=ROWS) return false;
-  const tt=gtype(tx,ty);
-  if(tt>0&&EKEYS[tt-1]==='HONEY'&&ELEMENTS[EKEYS[type-1]].type!=='liquid') return false;
-  if(tt===0){ sc(nextGrid,tx,ty,type,temp,1); cc(nextGrid,fx,fy); return true; }
-  const se=ELEMENTS[EKEYS[type-1]];
-  if(tt>0){
-    const de=ELEMENTS[EKEYS[tt-1]];
-    if(se.density>de.density&&de.type==='liquid'&&se.type!=='gas'){
-      sc(nextGrid,tx,ty,type,temp,1);
-      sc(nextGrid,fx,fy,tt,nextGrid[gi(tx,ty)+1],1);
-      return true;
-    }
-  }
-  return false;
-}
-
 function explode(cx,cy,r,chain=true){
   flash('normal');
   for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
@@ -969,27 +1804,33 @@ function explode(cx,cy,r,chain=true){
       const nk=EKEYS[nt-1];
       if(nk==='TNT')       setTimeout(()=>bigExplode(nx,ny),100+Math.random()*200);
       if(nk==='GUNPOWDER') explode(nx,ny,3,false);
+      if(nk==='METHANE')   explode(nx,ny,5,false);
       if(nk==='NUKE')      setTimeout(()=>nukeExplode(nx,ny),200+Math.random()*300);
+      if(nk==='GLASS')     sc(nextGrid,nx,ny,EIDX.SAND,20,0); // glass shatters → sand
     }
     cc(nextGrid,nx,ny);
-    // only fire, no smoke
-    if(Math.random()<0.5) sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+    const p=Math.random();
+    if(p<0.4)      sc(nextGrid,nx,ny,EIDX.FIRE,220,0);
+    else if(p<0.55) sc(nextGrid,nx,ny,EIDX.SMOKE,80,0);
   }
 }
 
 function bigExplode(cx,cy){
-  explode(cx,cy,10,true);
-  for(let dy=-14;dy<=14;dy++) for(let dx=-14;dx<=14;dx++){
+  explode(cx,cy,12,true);
+  for(let dy=-18;dy<=18;dy++) for(let dx=-18;dx<=18;dx++){
     const d=dx*dx+dy*dy;
-    if(d>=90&&d<=196){
+    if(d>=120&&d<=324){
       const nx=cx+dx, ny=cy+dy;
-      if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&gtype(nx,ny)===0&&Math.random()<0.3)
-        sc(nextGrid,nx,ny,EIDX.FIRE,160,0);
+      if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS){
+        const nt=gtype(nx,ny);
+        if(nt>0&&EKEYS[nt-1]==='GLASS') sc(nextGrid,nx,ny,EIDX.SAND,20,0); // shatter
+        if(gtype(nx,ny)===0&&Math.random()<0.3) sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
+        if(gtype(nx,ny)===0&&Math.random()<0.2) sc(nextGrid,nx,ny,EIDX.SMOKE,80,0);
+      }
     }
   }
 }
 
-// NUKE: massive explosion + radiation fallout — no smoke, uses fire + virus only
 function nukeExplode(cx,cy){
   flash('nuke');
   const R=Math.min(Math.floor(Math.min(COLS,ROWS)*0.45),80);
@@ -998,16 +1839,16 @@ function nukeExplode(cx,cy){
     if(dist2>R*R) continue;
     const nx=cx+dx, ny=cy+dy;
     if(nx<0||nx>=COLS||ny<0||ny>=ROWS) continue;
+    // Shatter glass in blast
+    if(gtype(nx,ny)>0&&EKEYS[gtype(nx,ny)-1]==='GLASS') sc(nextGrid,nx,ny,EIDX.SAND,20,0);
     cc(nextGrid,nx,ny);
     const dist=Math.sqrt(dist2);
-    // Inner fireball
-    if(dist<R*0.35&&Math.random()<0.9)         sc(nextGrid,nx,ny,EIDX.FIRE,230,0);
-    // Mid ring — dense fire
-    else if(dist<R*0.6&&Math.random()<0.75)    sc(nextGrid,nx,ny,EIDX.FIRE,180,0);
-    // Outer ring — fire fading
-    else if(dist<R*0.82&&Math.random()<0.5)    sc(nextGrid,nx,ny,EIDX.FIRE,130,0);
-    // Fallout fringe — radiation virus particles only
-    else if(Math.random()<0.2)                 sc(nextGrid,nx,ny,EIDX.VIRUS,30,0);
+    if(dist<R*0.3&&Math.random()<0.95)       sc(nextGrid,nx,ny,EIDX.FIRE,240,0);
+    else if(dist<R*0.55&&Math.random()<0.8)  sc(nextGrid,nx,ny,EIDX.FIRE,200,0);
+    else if(dist<R*0.75&&Math.random()<0.55) {
+      Math.random()<0.6 ? sc(nextGrid,nx,ny,EIDX.FIRE,150,0) : sc(nextGrid,nx,ny,EIDX.SMOKE,100,0);
+    }
+    else if(Math.random()<0.25)              sc(nextGrid,nx,ny,EIDX.VIRUS,30,0); // fallout radiation
   }
 }
 
@@ -1015,7 +1856,7 @@ function flash(type='normal'){
   const f=document.getElementById('flashOverlay');
   if(type==='nuke'){
     f.classList.add('nuke');
-    setTimeout(()=>f.classList.remove('nuke'),300);
+    setTimeout(()=>f.classList.remove('nuke'),350);
   } else {
     f.classList.add('flash');
     setTimeout(()=>f.classList.remove('flash'),80);
@@ -1029,7 +1870,7 @@ let tick2=0;
 function render(){
   tick2++;
   const w=canvas.width, h=canvas.height;
-  for(let i=0;i<pixels.length;i+=4){ pixels[i]=26; pixels[i+1]=26; pixels[i+2]=26; pixels[i+3]=255; }
+  for(let i=0;i<pixels.length;i+=4){ pixels[i]=17; pixels[i+1]=17; pixels[i+2]=17; pixels[i+3]=255; }
 
   for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
     const type=grid[gi(x,y)]; if(!type) continue;
@@ -1041,73 +1882,158 @@ function render(){
     g=Math.max(0,Math.min(255,g+v));
     b=Math.max(0,Math.min(255,b+v));
 
-    if(key==='FIRE')      { const t=ct/200; r=255; g=Math.floor(t*130); b=0; }
-    if(key==='LAVA')      { r=200+Math.random()*55; g=50+Math.random()*40; b=0; }
-    if(key==='ELECTRIC')  { const f=Math.random()<0.5; r=f?255:200; g=f?255:220; b=f?80:0; }
-    if(key==='VIRUS')     { r=150+Math.random()*80; g=0; b=180+Math.random()*75; }
-    if(key==='ANTIMATTER'){ r=Math.random()*30; g=0; b=Math.random()*60; }
-    if(key==='TORNADO')   { const f=Math.random()<0.3; r=f?220:170; g=f?220:170; b=f?240:200; }
-    if(key==='MAGMAROCK') { r=80+Math.random()*40; g=20+Math.random()*20; b=5; }
-    if(key==='BUBBLE')    { const a=Math.sin(tick2*0.1+x*0.5)*20; r=Math.max(0,Math.min(255,120+a)); g=Math.max(0,Math.min(255,200+a)); b=240; }
-    if(key==='TNT')       { const f=Math.random()<0.05; r=f?255:200; g=f?200:20; b=f?50:20; }
-    if(key==='STEAM')     { r=g=b=180+ct/100*20; }
+    // Custom rendering per element
+    if(key==='FIRE'){
+      const t=ct/220;
+      r=255; g=Math.floor(t*160+Math.random()*20); b=Math.floor(t*10);
+    }
+    if(key==='SMOKE'){
+      const bright=100+ct*0.6+Math.random()*20;
+      r=g=b=bright;
+    }
+    if(key==='LAVA'){
+      const pulse=Math.sin(tick2*0.06+x*0.4+y*0.2)*0.5+0.5;
+      r=Math.floor(200+pulse*55+Math.random()*15);
+      g=Math.floor(50+pulse*45+Math.random()*20);
+      b=Math.floor(Math.random()*10);
+    }
+    if(key==='WATER'){
+      const wave=Math.sin(tick2*0.03+x*0.4)*5;
+      r=Math.floor(50+wave+Math.random()*8);
+      g=Math.floor(115+wave+Math.random()*8);
+      b=Math.floor(210+wave*0.3+Math.random()*10);
+    }
+    if(key==='SALTWATER'){
+      const wave=Math.sin(tick2*0.03+x*0.3)*5;
+      r=Math.floor(50+wave+Math.random()*8);
+      g=Math.floor(110+wave+Math.random()*8);
+      b=Math.floor(195+wave*0.3+Math.random()*10);
+    }
+    if(key==='ELECTRIC'){
+      const f=Math.random()<0.55;
+      r=f?255:180; g=f?255:210; b=f?60:0;
+    }
+    if(key==='LIGHTNING'){
+      const f=Math.random()<0.65;
+      r=f?255:180; g=f?255:200; b=255;
+    }
+    if(key==='VIRUS'){
+      r=140+Math.random()*90; g=0; b=180+Math.random()*75;
+    }
+    if(key==='ANTIMATTER'){
+      r=Math.random()*30; g=0; b=Math.random()*60;
+    }
+    if(key==='TORNADO'){
+      const f=Math.random()<0.3;
+      r=f?225:175; g=f?225:175; b=f?245:205;
+    }
+    if(key==='MAGMAROCK'){
+      const glow=Math.sin(tick2*0.04+x*0.3)*0.5+0.5;
+      r=Math.floor(90+glow*35+Math.random()*20);
+      g=Math.floor(35+glow*15+Math.random()*12);
+      b=Math.floor(5+Math.random()*8);
+    }
+    if(key==='BUBBLE'){
+      const a=Math.sin(tick2*0.12+x*0.5)*25;
+      r=Math.max(0,Math.min(255,110+a)); g=Math.max(0,Math.min(255,205+a)); b=240;
+    }
+    if(key==='TNT'){
+      const f=Math.random()<0.06;
+      r=f?255:200; g=f?200:25; b=f?50:25;
+    }
+    if(key==='STEAM'){
+      const br=175+ct*0.25+Math.random()*20;
+      r=Math.floor(br); g=Math.floor(br+5); b=Math.floor(br+15);
+    }
     if(key==='CRYSTAL'){
-      const ph =Math.sin(tick2*0.05+x*0.3+y*0.2)*0.5+0.5;
-      const ph2=Math.sin(tick2*0.07+x*0.2-y*0.3)*0.5+0.5;
-      r=Math.floor(120+ph*120 +Math.random()*15);
-      g=Math.floor( 60+ph2*80 +Math.random()*15);
-      b=Math.floor(200+ph*55  +Math.random()*10);
+      const ph=Math.sin(tick2*0.05+x*0.3+y*0.2)*0.5+0.5;
+      const ph2=Math.sin(tick2*0.08+x*0.2-y*0.3)*0.5+0.5;
+      r=Math.floor(110+ph*130+Math.random()*15);
+      g=Math.floor(50+ph2*85+Math.random()*15);
+      b=Math.floor(195+ph*60+Math.random()*10);
     }
     if(key==='HONEY'){
       const wv=Math.sin(tick2*0.03+x*0.4)*8;
-      r=Math.floor(210+wv  +Math.random()*10);
-      g=Math.floor(140+wv*0.5+Math.random()*10);
-      b=Math.floor( 10     +Math.random()*8);
+      r=Math.floor(215+wv+Math.random()*10);
+      g=Math.floor(150+wv*0.5+Math.random()*10);
+      b=Math.floor(15+Math.random()*8);
     }
     if(key==='VOID'){
       r=Math.random()<0.04?Math.floor(Math.random()*40):0;
-      g=0;
-      b=Math.random()<0.04?Math.floor(Math.random()*30):0;
-    }
-    if(key==='LIGHTNING'){
-      const f=Math.random()<0.6;
-      r=f?255:180; g=f?255:200; b=255;
+      g=0; b=Math.random()<0.04?Math.floor(Math.random()*30):0;
     }
     if(key==='CORAL'){
       const wave=Math.sin(tick2*0.04+x*0.5+y*0.3)*15;
-      r=Math.floor(240+wave+Math.random()*15);
-      g=Math.floor( 70+wave*0.3+Math.random()*20);
-      b=Math.floor( 90+wave*0.5+Math.random()*15);
+      r=Math.floor(235+wave+Math.random()*15);
+      g=Math.floor(65+wave*0.3+Math.random()*22);
+      b=Math.floor(85+wave*0.5+Math.random()*18);
     }
-    // FREEZE: icy cyan shimmer, sparkles on impact
     if(key==='FREEZE'){
-      const sparkle=Math.random()<0.07;
+      const sparkle=Math.random()<0.08;
       if(sparkle){ r=255; g=255; b=255; }
       else{
         const pulse=Math.sin(tick2*0.08+x*0.4+y*0.3)*0.5+0.5;
-        r=Math.floor(80 +pulse*80+Math.random()*20);
-        g=Math.floor(190+pulse*50+Math.random()*15);
-        b=Math.floor(230+pulse*20+Math.random()*10);
+        r=Math.floor(70+pulse*80+Math.random()*20);
+        g=Math.floor(195+pulse*50+Math.random()*15);
+        b=Math.floor(235+pulse*20+Math.random()*10);
       }
     }
-    // RUBBER: bright green, glows when moving fast
     if(key==='RUBBER'){
       const vel=rubberVel.get(x+','+y);
       const speed=vel?Math.abs(vel.vx)+Math.abs(vel.vy):0;
       const eg=Math.min(speed*15,80);
-      r=Math.floor(20 +eg*0.4+Math.random()*12);
-      g=Math.floor(180+eg*0.3+Math.random()*20);
-      b=Math.floor(50 +eg*0.2+Math.random()*12);
+      r=Math.floor(25+eg*0.4+Math.random()*12);
+      g=Math.floor(175+eg*0.3+Math.random()*22);
+      b=Math.floor(55+eg*0.2+Math.random()*12);
     }
-    // NUKE: pulsing radioactive green with danger flicker
     if(key==='NUKE'){
       const pulse=Math.sin(tick2*0.15+x*0.5+y*0.5)*0.5+0.5;
-      if(Math.random()<0.06){ r=255; g=255; b=100; }
-      else{
-        r=Math.floor(20 +pulse*30+Math.random()*15);
-        g=Math.floor(200+pulse*55+Math.random()*20);
-        b=Math.floor(10 +pulse*20+Math.random()*10);
-      }
+      if(Math.random()<0.07){ r=255; g=255; b=120; }
+      else{ r=Math.floor(15+pulse*28+Math.random()*15); g=Math.floor(195+pulse*60+Math.random()*20); b=Math.floor(10+pulse*18+Math.random()*10); }
+    }
+    if(key==='METHANE'){
+      r=Math.floor(110+Math.random()*20); g=Math.floor(195+Math.random()*20); b=Math.floor(140+Math.random()*20);
+    }
+    if(key==='CO2'){
+      const br=90+Math.random()*25;
+      r=Math.floor(br); g=Math.floor(br+20); b=Math.floor(br+40);
+    }
+    if(key==='ALCOHOL'){
+      r=Math.floor(185+Math.random()*20); g=Math.floor(215+Math.random()*20); b=255;
+    }
+    if(key==='MERCURY'){
+      const shine=Math.random()<0.2;
+      if(shine){ r=g=b=240; }
+      else{ r=g=Math.floor(185+Math.random()*20); b=Math.floor(195+Math.random()*20); }
+    }
+    if(key==='IRON'){
+      const rust=Math.random()<0.05;
+      r=rust?Math.floor(160+Math.random()*30):Math.floor(150+Math.random()*20);
+      g=rust?Math.floor(80+Math.random()*20):Math.floor(150+Math.random()*20);
+      b=rust?Math.floor(40+Math.random()*15):Math.floor(160+Math.random()*20);
+    }
+    if(key==='SNOW'){
+      const br=Math.floor(225+Math.random()*30);
+      r=br; g=br; b=255;
+    }
+    if(key==='ASH'){
+      const br=Math.floor(148+Math.random()*20);
+      r=br; g=br-2; b=br-4;
+    }
+    if(key==='COAL'){
+      r=Math.floor(40+Math.random()*15); g=Math.floor(40+Math.random()*15); b=Math.floor(45+Math.random()*15);
+    }
+    if(key==='SULFUR'){
+      const pulse=Math.sin(tick2*0.04+x*0.3)*0.5+0.5;
+      r=Math.floor(195+pulse*25+Math.random()*12);
+      g=Math.floor(188+pulse*15+Math.random()*12);
+      b=Math.floor(35+Math.random()*15);
+    }
+    if(key==='CONCRETE'){
+      const wet=concreteAge.has(x+','+y);
+      r=wet?Math.floor(130+Math.random()*15):Math.floor(165+Math.random()*15);
+      g=wet?Math.floor(128+Math.random()*15):Math.floor(162+Math.random()*15);
+      b=wet?Math.floor(135+Math.random()*15):Math.floor(158+Math.random()*15);
     }
 
     for(let py=0;py<CELL;py++) for(let px=0;px<CELL;px++){
@@ -1120,14 +2046,14 @@ function render(){
 
   ctx.putImageData(imageData,0,0);
 
-  // Tornado glow overlay
+  // Tornado glow
   for(const t of tornadoes){
-    ctx.save(); ctx.globalAlpha=0.09;
-    const gr=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,8*CELL);
-    gr.addColorStop(0,'rgba(200,200,220,1)');
-    gr.addColorStop(1,'rgba(200,200,220,0)');
+    ctx.save(); ctx.globalAlpha=0.08;
+    const gr=ctx.createRadialGradient(t.x*CELL,t.y*CELL,0,t.x*CELL,t.y*CELL,9*CELL);
+    gr.addColorStop(0,'rgba(200,200,230,1)');
+    gr.addColorStop(1,'rgba(200,200,230,0)');
     ctx.fillStyle=gr;
-    ctx.beginPath(); ctx.arc(t.x*CELL,t.y*CELL,8*CELL,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(t.x*CELL,t.y*CELL,9*CELL,0,Math.PI*2); ctx.fill();
     ctx.restore();
   }
 
@@ -1142,7 +2068,10 @@ function render(){
 function updateStats(){
   let cnt=0, tot=0;
   for(let i=0;i<grid.length;i+=3){ if(grid[i]){ cnt++; tot+=grid[i+1]; } }
-  document.getElementById('tempDisplay').textContent=(cnt>0?(tot/cnt).toFixed(1):'20.0')+'°C';
+  const avgT=cnt>0?tot/cnt:20;
+  // Map internal temp (0-255) roughly to Celsius
+  const celsius=Math.round((avgT-20)*5);
+  document.getElementById('tempDisplay').textContent=celsius+'°C';
   document.getElementById('pressDisplay').textContent=(1+cnt/5000).toFixed(2)+' atm';
   document.getElementById('particleDisplay').textContent=cnt.toLocaleString();
 }
@@ -1151,12 +2080,30 @@ function updateStats(){
 // UI
 // ══════════════════════════════════════════════
 function buildGrid(){
-  document.getElementById('elementGrid').innerHTML=
-    Object.entries(ELEMENTS).map(([k,e])=>
-      `<button class="eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}"
-        style="background:${CSS_COLORS[k]}" onclick="pick('${k}')" id="eb-${k}">${e.label}</button>`
-    ).join('');
+  const grid2=document.getElementById('elementGrid');
+  grid2.innerHTML='';
+  EKEYS.forEach(k=>{
+    const e=ELEMENTS[k];
+    const btn=document.createElement('button');
+    btn.className=`eb ${DARK_TEXT.has(k)?'dk':'lt'} ${k===selElem?'sel':''}`;
+    btn.style.background=CSS_COLORS[k];
+    btn.id='eb-'+k;
+    btn.textContent=e.label;
+    btn.onclick=()=>pick(k);
+    // Tooltip
+    btn.addEventListener('mouseenter',ev=>{
+      const tt=document.getElementById('tooltip');
+      tt.textContent=`${e.label}: ${e.tip}`;
+      tt.classList.add('show');
+      const r=btn.getBoundingClientRect();
+      tt.style.left=r.left+'px';
+      tt.style.top=(r.top-40)+'px';
+    });
+    btn.addEventListener('mouseleave',()=>document.getElementById('tooltip').classList.remove('show'));
+    grid2.appendChild(btn);
+  });
 }
+
 function pick(k){
   document.getElementById('eb-'+selElem)?.classList.remove('sel');
   selElem=k;
@@ -1167,24 +2114,33 @@ function togglePanel(){
   document.getElementById('panelScroll').classList.toggle('hidden',!panelOpen);
   doResize();
 }
-function toggleSettings(){ document.getElementById('settingsPanel').classList.toggle('open'); }
-function toggleSetting(k,b){ settings[k]=!settings[k]; b.classList.toggle('on',settings[k]); }
-function clearCanvas(){ grid.fill(0); for(let i=1;i<grid.length;i+=3) grid[i]=20; tornadoes=[]; rubberVel.clear(); }
+function toggleSettings(){
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+function toggleSetting(k,b){
+  settings[k]=!settings[k];
+  b.classList.toggle('on',settings[k]);
+}
+function clearCanvas(){
+  grid.fill(0);
+  for(let i=1;i<grid.length;i+=3) grid[i]=20;
+  tornadoes=[]; rubberVel.clear(); concreteAge.clear();
+}
 
-document.addEventListener('click', e=>{
+document.addEventListener('click',e=>{
   const p=document.getElementById('settingsPanel');
   if(p.classList.contains('open')&&!p.contains(e.target)&&!e.target.closest('#settingsBtn'))
     p.classList.remove('open');
 });
 
 // ══════════════════════════════════════════════
-// RESIZE / ORIENTATION
+// RESIZE
 // ══════════════════════════════════════════════
 let resizeTO=null;
 function scheduleResize(){ clearTimeout(resizeTO); resizeTO=setTimeout(doResize,200); }
-window.addEventListener('resize', scheduleResize);
-window.addEventListener('orientationchange', ()=>setTimeout(scheduleResize,300));
-if(screen.orientation) screen.orientation.addEventListener('change', ()=>setTimeout(scheduleResize,300));
+window.addEventListener('resize',scheduleResize);
+window.addEventListener('orientationchange',()=>setTimeout(scheduleResize,300));
+if(screen.orientation) screen.orientation.addEventListener('change',()=>setTimeout(scheduleResize,300));
 
 // ══════════════════════════════════════════════
 // MAIN LOOP
