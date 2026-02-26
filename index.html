@@ -195,10 +195,11 @@ margin-bottom: 16px;
 
 .stat { text-align: center; }
 .stat-val {
-font-family: ‘Orbitron’, ‘Courier New’, monospace;
-font-size: 20px;
-font-weight: 700;
+font-family: ‘Rajdhani’, ‘Trebuchet MS’, Arial, sans-serif;
+font-size: 26px;
+font-weight: 900;
 color: var(–accent2);
+line-height: 1;
 }
 .stat-label {
 font-size: 11px;
@@ -1176,15 +1177,15 @@ animation: particleFly 1.5s ease-out forwards;
     </div>
     <div class="main-stats">
       <div class="stat">
-        <div class="stat-val" id="statOpened">0</div>
+        <div class="stat-val" id="statOpened" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:28px;font-weight:900;">0</div>
         <div class="stat-label">Opened</div>
       </div>
       <div class="stat">
-        <div class="stat-val" id="statUnique">0</div>
+        <div class="stat-val" id="statUnique" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:28px;font-weight:900;">0</div>
         <div class="stat-label">Unique</div>
       </div>
       <div class="stat">
-        <div class="stat-val" id="statRarest">—</div>
+        <div class="stat-val" id="statRarest" style="font-family:'Rajdhani','Trebuchet MS',Arial,sans-serif;font-size:18px;font-weight:900;">—</div>
         <div class="stat-label">Best Drop</div>
       </div>
     </div>
@@ -1468,26 +1469,34 @@ function saveCodes() {
 // UI UTILS
 // ═══════════════════════════════════════
 function refreshBalance() {
-  const f = '$' + G.coins.toLocaleString();
-  document.getElementById('balanceDisplay').textContent = G.coins.toLocaleString();
+  const num = G.coins.toLocaleString();
+  const f = '$' + num;
+  document.getElementById('balanceDisplay').textContent = num;
   document.getElementById('openingBalance').textContent = f;
   document.getElementById('invBalance').textContent = f;
 }
 
 function refreshStats() {
-  const owned = Object.keys(G.inventory);
+  const owned = Object.entries(G.inventory).filter(([,qty]) => qty > 0);
   document.getElementById('statOpened').textContent = G.casesOpened || 0;
   document.getElementById('statUnique').textContent = owned.length;
 
   // Best rarity
   let best = null;
-  owned.forEach(k => {
+  owned.forEach(([k]) => {
     const item = ITEMS[k];
     if (!item) return;
     if (!best || RARITY_ORDER.indexOf(item.rarity) > RARITY_ORDER.indexOf(ITEMS[best]?.rarity)) best = k;
   });
   const bestEl = document.getElementById('statRarest');
-  bestEl.textContent = best ? RARITY_STYLE[ITEMS[best].rarity].label.slice(0,3) : '—';
+  if (best) {
+    const label = RARITY_STYLE[ITEMS[best].rarity].label;
+    // Show first 4 chars to keep it short but readable
+    bestEl.textContent = label.slice(0, 4).toUpperCase();
+    bestEl.style.color = '';
+  } else {
+    bestEl.textContent = '—';
+  }
 }
 
 let toastTimer = null;
